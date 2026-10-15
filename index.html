@@ -79,12 +79,15 @@
   .map-note { margin: -16px 2px 20px; font-size: 13px; color: var(--warn); }
   .k-pin { cursor: pointer; padding-bottom: 6px; }
   .pin.home { cursor: pointer; }
+  /* 말풍선은 마우스를 받지 않게 해서 핀의 hover가 끊기지 않게 한다.
+     카카오 오버레이는 margin을 크기에 넣지 않으므로 핀과의 간격은 바깥 래퍼의 padding으로 준다. */
+  .k-bubble-wrap { pointer-events: none; padding-bottom: 44px; }
+  .k-bubble-wrap.below { padding: 8px 0 0; }
   .k-bubble {
-    position: relative; margin-bottom: 44px; padding: 8px 12px; background: #fff; color: #1c2118;
+    padding: 8px 12px; background: #fff; color: #1c2118;
     border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.25); font-size: 13px; line-height: 1.5; white-space: nowrap;
   }
   .k-bubble strong { font-size: 14px; }
-  .k-bubble.below { margin: 8px 0 0; }
   .k-pin:hover .pin, .leaflet-marker-icon:hover .pin:not(.home), .pin.home:hover { transform: rotate(-45deg) scale(1.12); }
   .pin.home:hover { transform: scale(1.12); }
   .pin { transition: transform .15s ease-out; cursor: pointer; }
@@ -530,16 +533,23 @@ function initKakaoMap() {
   map.setZoomable(false);
 
   // 카카오 CustomOverlay는 yAnchor를 바꿀 수 없어서 위/아래용 말풍선을 따로 둔다
-  const bubbleUp = new maps.CustomOverlay({ yAnchor: 1, zIndex: 10 });
-  const bubbleDown = new maps.CustomOverlay({ yAnchor: 0, zIndex: 10 });
-  const bubble = { setMap: m => { bubbleUp.setMap(m); bubbleDown.setMap(m); } };
+  const makeBubble = (yAnchor, cls) => {
+    const el = document.createElement("div");
+    el.className = `k-bubble-wrap${cls}`;
+    return { el, overlay: new maps.CustomOverlay({ yAnchor, zIndex: 10, content: el }) };
+  };
+  const bubbleUp = makeBubble(1, "");
+  const bubbleDown = makeBubble(0, " below");
+  const bubble = { setMap: m => { bubbleUp.overlay.setMap(m); bubbleDown.overlay.setMap(m); } };
   const showBubble = (pos, html) => {
     const below = map.getProjection().containerPointFromCoords(pos).y < TIP_FLIP_Y;
     const [on, off] = below ? [bubbleDown, bubbleUp] : [bubbleUp, bubbleDown];
-    off.setMap(null);
-    on.setContent(`<div class="k-bubble${below ? " below" : ""}">${html}</div>`);
-    on.setPosition(pos);
-    on.setMap(map);
+    off.overlay.setMap(null);
+    on.el.innerHTML = `<div class="k-bubble">${html}</div>`;
+    on.overlay.setPosition(pos);
+    on.overlay.setMap(map);
+    // 카카오가 씌우는 바깥 상자도 마우스를 받으면 핀 hover가 끊겨 깜빡이므로 막는다
+    if (on.el.parentElement) on.el.parentElement.style.pointerEvents = "none";
   };
   maps.event.addListener(map, "click", () => bubble.setMap(null));
 
