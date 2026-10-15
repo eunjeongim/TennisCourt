@@ -60,7 +60,8 @@
   .prefs { display: flex; gap: 6px; flex-wrap: wrap; }
   .chip { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 
-  #map { height: 420px; border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); z-index: 0; }
+  .map-wrap { position: relative; }
+  #map { height: 480px; border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); z-index: 0; }
   .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 13px; margin: 8px 2px 24px; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
@@ -137,6 +138,52 @@
   .vac-badge { display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; padding: 1px 9px; cursor: pointer; }
   @media (max-width: 520px) { .vac-day { grid-template-columns: 1fr; } }
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: 0 0 14px; }
+  .tabs a {
+    padding: 9px 16px; font-weight: 700; font-size: 15px; color: var(--muted); text-decoration: none;
+    border-bottom: 3px solid transparent; margin-bottom: -1px;
+  }
+  .tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .tabs a:hover { color: var(--text); }
+
+  .list-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+  table.list { min-width: 920px; font-size: 13.5px; }
+  table.list th, table.list td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; width: auto; }
+  table.list thead th { position: sticky; top: 0; background: var(--surface-2); color: var(--muted); font-weight: 700; font-size: 12.5px; white-space: nowrap; z-index: 2; }
+  table.list th.sortable { cursor: pointer; user-select: none; }
+  table.list th.sortable::after { content: " ↕"; opacity: .4; }
+  table.list th[aria-sort="ascending"]::after { content: " ↑"; opacity: 1; color: var(--accent); }
+  table.list th[aria-sort="descending"]::after { content: " ↓"; opacity: 1; color: var(--accent); }
+  table.list tbody tr { cursor: pointer; transition: background .12s; }
+  table.list tbody tr:hover { background: var(--surface-2); }
+  table.list tbody tr:last-child td { border-bottom: 0; }
+  table.list .name-cell { position: sticky; left: 0; background: var(--surface); z-index: 1; min-width: 210px; }
+  table.list tbody tr:hover .name-cell { background: var(--surface-2); }
+  .name-cell .nm { font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .name-cell .nm .num { width: 20px; height: 20px; font-size: 11px; }
+  .name-cell .sub2 { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  tr.fav .num { background: var(--star); }
+  tr.private .num { background: var(--private); }
+  .min-cell { font-weight: 700; color: var(--accent); font-size: 15px; white-space: nowrap; }
+  .fit-cell { white-space: nowrap; font-weight: 700; }
+  .fit-cell.ok { color: var(--accent); } .fit-cell.meh { color: var(--warn); } .fit-cell.no { color: var(--no); }
+  .fit-cell small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; white-space: normal; max-width: 150px; }
+  .price-cell { max-width: 230px; }
+  .price-cell small { color: var(--muted); }
+  .go { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 700; font-size: 12.5px; white-space: nowrap; }
+  .go svg { width: 14px; height: 14px; }
+  .go.none { background: var(--surface-2); color: var(--muted); }
+  .list-hint { color: var(--muted); font-size: 12.5px; margin: 8px 2px 0; }
+  @media (max-width: 720px) {
+    table.list { min-width: 640px; font-size: 13px; }
+    table.list th, table.list td { padding: 8px 9px; }
+    table.list .name-cell { min-width: 150px; max-width: 170px; }
+    table.list td:nth-child(3) { min-width: 120px; }
+    table.list td:nth-child(2) { min-width: 64px; }
+    .fit-cell small, .price-cell small { display: none; }
+    .fit-cell { font-size: 16px; text-align: center; }
+  }
   .card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
     box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px;
@@ -179,8 +226,36 @@
   .btn svg { width: 15px; height: 15px; flex: none; }
   footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
   footer p { margin: 4px 0; }
+  /* 핀을 누르면 지도 오른쪽에 열리는 상세 패널 (좁은 화면에서는 아래에서 올라오는 시트) */
+  .side {
+    position: absolute; top: 0; right: 0; bottom: 0; width: min(380px, 46%); z-index: 5;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 0 14px 14px 0;
+    box-shadow: -6px 0 24px rgba(0,0,0,.12); overflow-y: auto; overscroll-behavior: contain;
+    padding: 18px 18px 20px; animation: side-in .22s ease-out;
+  }
+  @keyframes side-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .side-close {
+    position: sticky; top: 0; float: right; margin: -6px -6px 0 8px; z-index: 1;
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 20px; line-height: 1; cursor: pointer;
+  }
+  .side-close:hover { background: var(--surface-2); }
+  .side .card { border: 0; box-shadow: none; padding: 0; }
+  .side .card-head { cursor: default; }
+  .side-vac { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 12px; }
+  .side-vac .vac-day { grid-template-columns: 1fr; }
+  .side-vac .vac-time { display: block; margin-bottom: 6px; }
+  .pin.selected { outline: 3px solid var(--text); outline-offset: 1px; }
+  @media (max-width: 720px) {
+    .side {
+      position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 72vh; z-index: 1000;
+      border-radius: 18px 18px 0 0; box-shadow: 0 -8px 28px rgba(0,0,0,.2);
+      padding-bottom: calc(20px + env(safe-area-inset-bottom)); animation-name: sheet-in;
+    }
+    @keyframes sheet-in { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  }
   @media (max-width: 520px) {
-    #map { height: 320px; }
+    #map { height: 340px; }
     .cards { grid-template-columns: 1fr; }
   }
 </style>
@@ -197,6 +272,11 @@
       <span class="chip">주말</span>
     </div>
   </header>
+
+  <nav class="tabs" aria-label="보기 전환">
+    <a href="#map" data-view="map">지도</a>
+    <a href="#list" data-view="list">테니스코트 리스트</a>
+  </nav>
 
   <div class="filters" role="group" aria-label="코트 필터">
     <div class="seg" aria-label="종류">
@@ -217,7 +297,14 @@
     <button type="button" class="reset" id="reset">초기화</button>
   </div>
 
-  <div id="map" role="region" aria-label="테니스코트 지도"></div>
+  <div id="view-map">
+  <div class="map-wrap">
+    <div id="map" role="region" aria-label="테니스코트 지도"></div>
+    <aside class="side" id="side" hidden aria-label="코트 상세 정보">
+      <button type="button" class="side-close" id="side-close" aria-label="닫기">×</button>
+      <div id="side-body"></div>
+    </aside>
+  </div>
   <div class="legend">
     <span><i class="dot" style="background:#2b5fb8"></i>영등포구청역</span>
     <span><i class="dot" style="background:var(--star)"></i>선호 코트</span>
@@ -236,7 +323,25 @@
     <p class="vac-note">목동·안양천·대림운동장만 확인해요. 진한 초록은 내 조건에 맞는 시간이에요. 예약은 각 사이트에서 직접 해 주세요.</p>
   </section>
 
-  <section class="cards" id="cards"></section>
+  </div>
+
+  <section id="view-list" hidden>
+    <div class="list-wrap">
+      <table class="list">
+        <thead><tr>
+          <th class="name-cell sortable" data-sort="num" aria-sort="ascending">코트</th>
+          <th class="sortable" data-sort="min">영등포구청역에서</th>
+          <th>코트 구성</th>
+          <th class="sortable" data-sort="evening">평일 저녁</th>
+          <th class="sortable" data-sort="weekend">주말</th>
+          <th>대표 요금</th>
+          <th>예약</th>
+        </tr></thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+    <p class="list-hint">행을 누르면 지도에서 위치와 상세 정보를 볼 수 있어요. 머리글(↕)을 누르면 정렬돼요.</p>
+  </section>
   <p class="empty" id="empty" hidden>조건에 맞는 코트가 없어요. 필터를 줄여 보세요.</p>
 
   <footer>
@@ -308,7 +413,68 @@ function cardHtml(c) {
   </article>`;
 }
 
-document.getElementById("cards").innerHTML = sorted.map(cardHtml).join("");
+// 테니스코트 리스트(표)
+const SURFACE_RE = /하드|클레이|인조잔디|잔디|카펫|앙투카/;
+const FIT_RANK = { ok: 0, meh: 1, no: 2 };
+let listSort = { key: "num", dir: 1 };
+
+function rowHtml(c) {
+  const surface = c.tags.find(t => SURFACE_RE.test(t)) || "";
+  const counts = c.tags.filter(t => /\d+\s*면/.test(t)).join(" · ");
+  const comp = [surface, counts, isIndoor(c) && !/실내/.test(counts) ? "실내" : ""].filter(Boolean).join(" · ") || "확인 필요";
+  const fit = key => {
+    const [lv, text] = c.fit[key];
+    return `<td class="fit-cell ${lv}">${FIT_MARK[lv]}<small>${esc(text)}</small></td>`;
+  };
+  const [pk, pv] = c.prices[0];
+  const allPrices = c.prices.map(([k, v]) => `${k}: ${v}`).join("\n");
+  const reserve = c.links.reserve
+    ? `<a class="go" href="${esc(c.links.reserve)}" target="_blank" rel="noopener">${ICON.calendar}예약</a>`
+    : `<span class="go none">${c.links.tel ? esc(c.links.tel) : "확인 필요"}</span>`;
+  return `<tr id="row-${c.id}" data-id="${c.id}" class="${c.type}${c.fav ? " fav" : ""}">
+    <td class="name-cell"><div class="nm"><span class="num">${numberOf[c.id]}</span>${c.fav ? "★ " : ""}${esc(c.name)}</div>
+      <div class="sub2"><span class="type-badge ${c.type}">${TYPE_LABEL[c.type]}</span>${esc(c.operator)}</div></td>
+    <td class="min-cell">${c.transit.min}분</td>
+    <td>${esc(comp)}</td>
+    ${fit("weekdayEvening")}${fit("weekend")}
+    <td class="price-cell" title="${esc(allPrices)}">${esc(pk)} <b>${esc(pv)}</b>${c.prices.length > 1 ? ` <small>외 ${c.prices.length - 1}개</small>` : ""}</td>
+    <td>${reserve}</td>
+  </tr>`;
+}
+
+function renderList() {
+  const val = {
+    num: c => numberOf[c.id], min: c => c.transit.min,
+    evening: c => FIT_RANK[c.fit.weekdayEvening[0]] * 100 + c.transit.min,
+    weekend: c => FIT_RANK[c.fit.weekend[0]] * 100 + c.transit.min
+  }[listSort.key];
+  const rows = [...sorted].sort((a, b) => (val(a) - val(b)) * listSort.dir);
+  document.getElementById("list-body").innerHTML = rows.map(rowHtml).join("");
+  document.querySelectorAll("table.list th.sortable").forEach(th =>
+    th.setAttribute("aria-sort", th.dataset.sort === listSort.key ? (listSort.dir > 0 ? "ascending" : "descending") : "none"));
+}
+
+document.querySelectorAll("table.list th.sortable").forEach(th => th.addEventListener("click", () => {
+  listSort = { key: th.dataset.sort, dir: listSort.key === th.dataset.sort ? -listSort.dir : 1 };
+  renderList(); applyFilters(); renderVacancy();
+}));
+document.getElementById("list-body").addEventListener("click", e => {
+  if (e.target.closest("a")) return;  // 예약 버튼은 그대로 링크
+  const tr = e.target.closest("tr[data-id]");
+  if (tr) { location.hash = "#map"; setTimeout(() => showOnMap(tr.dataset.id), 60); }
+});
+renderList();
+
+// 보기 전환 (#map / #list)
+function applyView() {
+  const view = location.hash === "#list" ? "list" : "map";
+  document.getElementById("view-map").hidden = view !== "map";
+  document.getElementById("view-list").hidden = view !== "list";
+  document.querySelectorAll(".tabs a").forEach(a => a.dataset.view === view ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  if (view === "map") setTimeout(() => mapApi.relayout(), 0);
+  else closeSide();
+}
+window.addEventListener("hashchange", applyView);
 
 // 필터
 const FILTER_KEY = "tennis-filters-v1";
@@ -325,7 +491,7 @@ const matches = c =>
 
 function applyFilters() {
   const visible = new Set(sorted.filter(matches).map(c => c.id));
-  sorted.forEach(c => { document.getElementById(`card-${c.id}`).hidden = !visible.has(c.id); });
+  sorted.forEach(c => { const r = document.getElementById(`row-${c.id}`); if (r) r.hidden = !visible.has(c.id); });
   document.getElementById("count").textContent = `${visible.size}곳`;
   document.getElementById("empty").hidden = visible.size > 0;
   mapApi.setVisible(visible);
@@ -353,9 +519,9 @@ const popupHtml = c => {
     <div class="tip-hint">클릭하면 상세 정보로 이동</div>
   </div>`;
 };
-const pinHtml = c => `<div class="${pinClass(c)}"><b>${numberOf[c.id]}</b></div>`;
+const pinHtml = c => `<div class="${pinClass(c)}" data-id="${c.id}"><b>${numberOf[c.id]}</b></div>`;
 const TIP_FLIP_Y = 170; // 핀이 지도 위쪽 이 픽셀 안에 있으면 말풍선을 아래로 띄움
-let mapApi = { setVisible() {}, focus() {} };
+let mapApi = { setVisible() {}, focus() {}, reveal() {}, relayout() {} };
 
 function initKakaoMap() {
   const { maps } = kakao;
@@ -384,6 +550,15 @@ function initKakaoMap() {
   homeEl.addEventListener("mouseleave", () => bubble.setMap(null));
   new maps.CustomOverlay({ position: home, content: homeEl, yAnchor: 0.5, zIndex: 5 }).setMap(map);
 
+  // 카카오맵은 드래그 처리를 위해 mousedown을 가로채서 핀에 click이 오지 않는다.
+  // 지도에서 누른 위치를 기억해 두고, 핀에서 손을 뗄 때 거의 안 움직였으면 클릭으로 본다.
+  let downAt = null;
+  const mapEl = document.getElementById("map");
+  // pointerdown은 카카오가 먼저 막아서 mousedown/touchstart로 기록한다
+  mapEl.addEventListener("mousedown", e => { downAt = [e.clientX, e.clientY]; }, true);
+  mapEl.addEventListener("touchstart", e => { const t = e.touches[0]; downAt = [t.clientX, t.clientY]; }, { capture: true, passive: true });
+  const isTap = e => downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 8;
+
   const overlays = {};
   sorted.forEach(c => {
     const pos = new maps.LatLng(c.lat, c.lng);
@@ -392,8 +567,8 @@ function initKakaoMap() {
     el.className = "k-pin";
     el.addEventListener("mouseenter", () => showBubble(pos, popupHtml(c)));
     el.addEventListener("mouseleave", () => bubble.setMap(null));
-    el.addEventListener("click", () => highlight(c.id, false));
-    overlays[c.id] = new maps.CustomOverlay({ position: pos, content: el, yAnchor: 1, zIndex: c.fav ? 6 : 4 });
+    el.addEventListener("pointerup", e => { if (isTap(e)) { bubble.setMap(null); openSide(c.id); } });
+    overlays[c.id] = new maps.CustomOverlay({ position: pos, content: el, yAnchor: 1, zIndex: c.fav ? 6 : 4, clickable: true });
   });
 
   mapApi = {
@@ -408,10 +583,15 @@ function initKakaoMap() {
       map.setBounds(bounds, 40, 40, 40, 40);
     },
     focus(id) {
-      const c = COURTS.find(x => x.id === id);
+      bubble.setMap(null);
       map.setLevel(4);
       map.panTo(overlays[id].getPosition());
-      showBubble(overlays[id].getPosition(), popupHtml(c));
+    },
+    relayout() { map.relayout(); },
+    reveal(id) {
+      const pt = map.getProjection().containerPointFromCoords(overlays[id].getPosition());
+      const dx = panelOverlap(pt.x);
+      if (dx) map.panBy(dx, 0);
     }
   };
   applyFilters();
@@ -444,7 +624,7 @@ function initLeafletMap(reason) {
       }).openTooltip();
     });
     m.on("mouseout", () => m.closeTooltip());
-    m.on("click", () => highlight(c.id, false));
+    m.on("click", () => { m.closeTooltip(); openSide(c.id); });
     markers[c.id] = m;
   });
 
@@ -459,7 +639,11 @@ function initLeafletMap(reason) {
     },
     focus(id) {
       map.flyTo(markers[id].getLatLng(), 15, { duration: 0.6 });
-      map.once("moveend", () => markers[id].fire("mouseover"));
+    },
+    relayout() { map.invalidateSize(); },
+    reveal(id) {
+      const dx = panelOverlap(map.latLngToContainerPoint(markers[id].getLatLng()).x);
+      if (dx) map.panBy([dx, 0]);
     }
   };
   applyFilters();
@@ -480,19 +664,64 @@ if (!KAKAO_KEY) {
   document.head.appendChild(sdk);
 }
 
-function highlight(id, fromCard) {
-  document.querySelectorAll(".card").forEach(el => el.classList.toggle("active", el.id === `card-${id}`));
-  if (fromCard) {
-    mapApi.focus(id);
-    document.getElementById("map").scrollIntoView({ behavior: "smooth", block: "start" });
-  } else {
-    const card = document.getElementById(`card-${id}`);
-    card.scrollIntoView({ behavior: "smooth", block: "center" });
-    card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
-  }
+// 목록(카드·빈자리 현황)에서 코트를 누르면 지도로 올라가 그 코트를 보여주고 패널을 연다
+function showOnMap(id) {
+  mapApi.focus(id);
+  openSide(id);
+  document.getElementById("map").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-document.querySelectorAll(".card-head").forEach(el => el.addEventListener("click", () => highlight(el.dataset.id, true)));
+
+
+// ---------- 상세 패널 ----------
+let sideId = null;
+const sideEl = document.getElementById("side");
+const isSheet = () => matchMedia("(max-width: 720px)").matches;
+
+// 핀이 오른쪽 패널에 가려지면 왼쪽 빈 영역 가운데로 오도록 이동할 거리
+function panelOverlap(x) {
+  if (sideEl.hidden || isSheet()) return 0;
+  const w = document.getElementById("map").clientWidth;
+  const free = w - sideEl.offsetWidth;
+  return x > free - 30 ? x - free / 2 : 0;
+}
+
+function sideVacHtml(id) {
+  if (!vacData || !VAC_COURTS[id]) return "";
+  const mine = document.getElementById("vac-mine").checked;
+  const days = vacDays(id, mine);
+  const rows = vacRowsHtml(days.slice(0, 5));
+  return `<div class="side-vac">
+    <p class="label">빈자리${mine ? " (내 조건)" : ""}</p>
+    <span class="vac-time">${esc(vacTimeText())}</span>
+    ${rows || `<p class="vac-empty" style="margin:0">지금 ${mine ? "조건에 맞는 " : ""}빈자리가 없어요.</p>`}
+    ${days.length > 5 ? `<p class="vac-note">외 ${days.length - 5}일 더 있어요. 아래 빈자리 현황에서 볼 수 있어요.</p>` : ""}
+  </div>`;
+}
+
+function openSide(id) {
+  const c = COURTS.find(x => x.id === id);
+  if (!c) return;
+  sideId = id;
+  document.getElementById("side-body").innerHTML =
+    cardHtml(c).replace(` id="card-${c.id}"`, "").replace(' title="지도에서 보기"', "") + sideVacHtml(id);
+  const wasHidden = sideEl.hidden;
+  sideEl.hidden = false;
+  if (!wasHidden) sideEl.scrollTop = 0;
+  document.querySelectorAll(".pin[data-id]").forEach(el => el.classList.toggle("selected", el.dataset.id === id));
+  document.querySelectorAll(".card").forEach(el => el.classList.toggle("active", el.id === `card-${id}`));
+  setTimeout(() => mapApi.reveal(id), 50);
+}
+
+function closeSide() {
+  sideEl.hidden = true;
+  sideId = null;
+  document.querySelectorAll(".pin.selected").forEach(el => el.classList.remove("selected"));
+  document.querySelectorAll(".card.active").forEach(el => el.classList.remove("active"));
+}
+
+document.getElementById("side-close").addEventListener("click", closeSide);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !sideEl.hidden) closeSide(); });
 
 // 빈자리 현황: PC 감시 프로그램이 올리는 vacancies.json을 읽어서 보여준다
 const VAC_COURTS = {
@@ -517,44 +746,55 @@ function courtNums(labels) {
   return [out.length ? `${out.join("·")}번` : "", ind.length ? `실내 ${ind.join("·")}번` : ""].filter(Boolean).join(", ");
 }
 
-function renderVacancy() {
-  if (!vacData) return;
-  const mine = document.getElementById("vac-mine").checked;
-  const now = new Date();
+function vacTimeText() {
   const checked = new Date(vacData.checked_at);
-  const ageMin = Math.round((now - checked) / 60000);
-  const timeEl = document.getElementById("vac-time");
-  timeEl.textContent = `마지막 확인 ${checked.getMonth() + 1}/${checked.getDate()} ${String(checked.getHours()).padStart(2, "0")}:${String(checked.getMinutes()).padStart(2, "0")}` +
+  const ageMin = Math.round((new Date() - checked) / 60000);
+  return `마지막 확인 ${checked.getMonth() + 1}/${checked.getDate()} ${String(checked.getHours()).padStart(2, "0")}:${String(checked.getMinutes()).padStart(2, "0")}` +
     (ageMin > 90 ? " · PC가 꺼져 있어 최신이 아닐 수 있어요" : "");
-  timeEl.classList.toggle("stale", ageMin > 90);
+}
 
+// [[날짜, Map(시간대 → {s, labels})], ...] 같은 날짜·시간은 한 칩으로 묶는다 (목동은 코트 번호 표시)
+function vacDays(cid, mine) {
+  const now = new Date();
   const today = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10); // 로컬 날짜
   const nowHM = now.toTimeString().slice(0, 5);
-  const counts = {};
-  const html = Object.entries(VAC_COURTS).map(([cid, info]) => {
-    const slots = (vacData.courts[cid] || [])
-      .filter(s => s.date > today || (s.date === today && s.start > nowHM))
-      .filter(s => !mine || fitsMe(s));
-    // 같은 날짜·시간은 한 칩으로 묶는다 (목동은 코트 번호 표시)
-    const byDay = new Map();
-    slots.forEach(s => {
+  const byDay = new Map();
+  (vacData.courts[cid] || [])
+    .filter(s => s.date > today || (s.date === today && s.start > nowHM))
+    .filter(s => !mine || fitsMe(s))
+    .forEach(s => {
       if (!byDay.has(s.date)) byDay.set(s.date, new Map());
       const key = `${s.start}~${s.end}`;
       const m = byDay.get(s.date);
       if (!m.has(key)) m.set(key, { s, labels: [] });
       m.get(key).labels.push(s.court || "");
     });
-    const total = [...byDay.values()].reduce((n, m) => n + m.size, 0);
+  return [...byDay.entries()];
+}
+
+function vacRowsHtml(days) {
+  return days.map(([d, m]) => `
+    <div class="vac-day"><span class="d${isWeekend(d) ? " we" : ""}">${fmtDay(d)}</span>
+      <span class="vac-slots">${[...m.entries()].map(([key, { s, labels }]) => {
+        const extra = labels.some(Boolean) ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
+        return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}</span>`;
+      }).join("")}</span></div>`).join("");
+}
+
+function renderVacancy() {
+  if (!vacData) return;
+  const mine = document.getElementById("vac-mine").checked;
+  const timeEl = document.getElementById("vac-time");
+  timeEl.textContent = vacTimeText();
+  timeEl.classList.toggle("stale", (new Date() - new Date(vacData.checked_at)) / 60000 > 90);
+
+  const counts = {};
+  const html = Object.entries(VAC_COURTS).map(([cid, info]) => {
+    const days = vacDays(cid, mine);
+    const total = days.reduce((n, [, m]) => n + m.size, 0);
     counts[cid] = total;
     if (!total) return "";
-    const days = [...byDay.entries()];
-    const shown = vacExpanded.has(cid) ? days : days.slice(0, VAC_SHOW_DAYS);
-    const rows = shown.map(([d, m]) => `
-      <div class="vac-day"><span class="d${isWeekend(d) ? " we" : ""}">${fmtDay(d)}</span>
-        <span class="vac-slots">${[...m.entries()].map(([key, { s, labels }]) => {
-          const extra = labels.some(Boolean) ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
-          return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}</span>`;
-        }).join("")}</span></div>`).join("");
+    const rows = vacRowsHtml(vacExpanded.has(cid) ? days : days.slice(0, VAC_SHOW_DAYS));
     const more = days.length > VAC_SHOW_DAYS
       ? `<button type="button" class="vac-more" data-cid="${cid}">${vacExpanded.has(cid) ? "접기" : `날짜 ${days.length - VAC_SHOW_DAYS}개 더 보기`}</button>` : "";
     return `<div class="vac-court">
@@ -569,18 +809,23 @@ function renderVacancy() {
     vacExpanded.has(b.dataset.cid) ? vacExpanded.delete(b.dataset.cid) : vacExpanded.add(b.dataset.cid);
     renderVacancy();
   }));
-  document.querySelectorAll(".vac-court-head strong").forEach(el => el.addEventListener("click", () => highlight(el.dataset.id, false)));
+  document.querySelectorAll(".vac-court-head strong").forEach(el => el.addEventListener("click", () => showOnMap(el.dataset.id)));
+  if (sideId && VAC_COURTS[sideId]) openSide(sideId);  // 열린 패널의 빈자리도 갱신
 
-  // 코트 카드에도 빈자리 수 배지
+  // 리스트 표의 코트 이름 칸에도 빈자리 수 배지
   Object.keys(VAC_COURTS).forEach(cid => {
-    const op = document.querySelector(`#card-${cid} .card-head > div`);
+    const op = document.querySelector(`#row-${cid} .name-cell`);
     if (!op) return;
     let badge = op.querySelector(".vac-badge");
     if (!counts[cid]) { badge && badge.remove(); return; }
     if (!badge) {
       badge = document.createElement("span");
       badge.className = "vac-badge";
-      badge.addEventListener("click", e => { e.stopPropagation(); document.getElementById("vacancy").scrollIntoView({ behavior: "smooth" }); });
+      badge.addEventListener("click", e => {
+        e.stopPropagation();
+        location.hash = "#map";
+        setTimeout(() => document.getElementById("vacancy").scrollIntoView({ behavior: "smooth" }), 60);
+      });
       op.appendChild(badge);
     }
     badge.textContent = `빈자리 ${counts[cid]}건${mine ? " (내 조건)" : ""}`;
@@ -600,6 +845,8 @@ document.getElementById("vac-mine").addEventListener("change", e => {
 });
 loadVacancy();
 setInterval(loadVacancy, 5 * 60 * 1000);
+
+applyView();  // 상세 패널 등 모든 준비가 끝난 뒤 보기 적용
 
 // 웹앱(홈 화면 추가) 오프라인 캐시
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
