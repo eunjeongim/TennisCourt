@@ -363,13 +363,17 @@ function initKakaoMap() {
   map.addControl(new maps.ZoomControl(), maps.ControlPosition.RIGHT);
   map.setZoomable(false);
 
-  const bubble = new maps.CustomOverlay({ yAnchor: 1, zIndex: 10 });
+  // 카카오 CustomOverlay는 yAnchor를 바꿀 수 없어서 위/아래용 말풍선을 따로 둔다
+  const bubbleUp = new maps.CustomOverlay({ yAnchor: 1, zIndex: 10 });
+  const bubbleDown = new maps.CustomOverlay({ yAnchor: 0, zIndex: 10 });
+  const bubble = { setMap: m => { bubbleUp.setMap(m); bubbleDown.setMap(m); } };
   const showBubble = (pos, html) => {
     const below = map.getProjection().containerPointFromCoords(pos).y < TIP_FLIP_Y;
-    bubble.setContent(`<div class="k-bubble${below ? " below" : ""}">${html}</div>`);
-    bubble.setYAnchor(below ? 0 : 1);
-    bubble.setPosition(pos);
-    bubble.setMap(map);
+    const [on, off] = below ? [bubbleDown, bubbleUp] : [bubbleUp, bubbleDown];
+    off.setMap(null);
+    on.setContent(`<div class="k-bubble${below ? " below" : ""}">${html}</div>`);
+    on.setPosition(pos);
+    on.setMap(map);
   };
   maps.event.addListener(map, "click", () => bubble.setMap(null));
 
