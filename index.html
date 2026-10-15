@@ -202,7 +202,21 @@
   .fav-badge { color: var(--star); font-size: 12px; font-weight: 700; white-space: nowrap; }
   .transit { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border-radius: 10px; padding: 8px 12px; }
   .transit .min { font-size: 22px; font-weight: 700; color: var(--accent); white-space: nowrap; }
-  .transit .route { font-size: 13px; color: var(--muted); }
+  .transit .route { font-size: 13px; color: var(--muted); line-height: 1.9; }
+  /* 지하철 노선 배지(노선 고유색), 버스·도보 아이콘 */
+  .ln {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 19px; height: 19px; padding: 0 5px;
+    border-radius: 10px; background: var(--c); color: #fff; font: 700 11px/1 "Noto Sans KR", sans-serif;
+    vertical-align: -4px; margin-right: 3px; letter-spacing: -.02em; white-space: nowrap;
+  }
+  .ln.named { border-radius: 5px; font-size: 10.5px; }
+  .tr-ic { display: inline-flex; align-items: center; gap: 2px; color: var(--c); font-weight: 700; white-space: nowrap; }
+  .tr-ic svg { width: 16px; height: 16px; flex: none; vertical-align: -3px; }
+  .tr-arrow { color: var(--muted); opacity: .6; margin: 0 1px; }
+  .modes { display: inline-flex; align-items: center; gap: 2px; margin-left: 6px; vertical-align: 1px; }
+  .modes .ln { margin: 0; }
+  .modes .tr-ic svg { width: 15px; height: 15px; }
+  .min-cell .modes { display: flex; margin: 4px 0 0; flex-wrap: wrap; }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag { font-size: 12px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
   .fit { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -370,6 +384,56 @@ const ICON = {
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const kakaoRoute = c => `https://map.kakao.com/link/to/${encodeURIComponent(c.name)},${c.lat},${c.lng}`;
 const FIT_MARK = { ok: "✓", meh: "△", no: "✕" };
+
+// ---------- 교통 경로 아이콘 ----------
+// 서울 지하철 노선 공식 색상
+const LINE_COLOR = {
+  1: "#0052A4", 2: "#00A84D", 3: "#EF7C1C", 4: "#00A5DE", 5: "#996CAC",
+  6: "#CD7C2F", 7: "#747F00", 8: "#E6186C", 9: "#BDB092"
+};
+const NAMED_LINES = [
+  ["경의중앙선", "경의중앙", "#77C4A3"], ["공항철도", "공항", "#0090D2"], ["수인분당선", "수인분당", "#FABE00"],
+  ["신분당선", "신분당", "#D4003B"], ["서해선", "서해", "#81A914"], ["신림선", "신림", "#6789CA"],
+  ["우이신설선", "우이", "#B0CE18"], ["김포골드라인", "김포", "#A17800"], ["신정지선", "2", "#00A84D"]
+];
+const BUS_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 16c0 .88.39 1.67 1 2.22V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6v10zm3.5 1a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm9 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM18 11H6V6h12v5z"/></svg>';
+const WALK_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 5.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM9.8 8.9 7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3A7.3 7.3 0 0 0 19 13v-2a5 5 0 0 1-4.3-2.4l-1-1.6a2 2 0 0 0-1.7-1c-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>';
+const lineBadge = (label, color, title, named) =>
+  `<span class="ln${named ? " named" : ""}" style="--c:${color}" title="${title}">${label}</span>`;
+const busIcon = village => `<span class="tr-ic" style="--c:${village ? "#5BB025" : "#3D5BAB"}" title="${village ? "마을버스" : "버스"}">${BUS_SVG}</span>`;
+const walkIcon = () => `<span class="tr-ic" style="--c:var(--muted)" title="도보">${WALK_SVG}</span>`;
+
+// 경로 문장을 그대로 보여주되 노선·버스·도보에 아이콘을 붙인다
+function routeHtml(text) {
+  let h = esc(text);
+  NAMED_LINES.forEach(([word, label, color]) => {
+    h = h.split(word).join(lineBadge(label, color, word, label.length > 1) + (word === "신정지선" ? "신정지선" : ""));
+  });
+  h = h.replace(/(\d)호선/g, (m, n) => LINE_COLOR[n] ? lineBadge(n, LINE_COLOR[n], m) : m);
+  h = h.replace(/마을버스|버스/g, m => busIcon(m === "마을버스") + m)
+       .replace(/도보/g, walkIcon() + "도보")
+       .replace(/→/g, '<span class="tr-arrow">→</span>');
+  return h;
+}
+
+// 표·말풍선용: 이용 수단만 순서대로 아이콘으로
+function modesHtml(text) {
+  const found = [];
+  const re = new RegExp(`(\\d)호선|${NAMED_LINES.map(l => l[0]).join("|")}|마을버스|버스|도보`, "g");
+  let m;
+  while ((m = re.exec(text))) {
+    const key = m[1] ? `L${m[1]}` : m[0];
+    if (found.some(f => f.key === key)) continue;
+    let html;
+    if (m[1]) html = LINE_COLOR[m[1]] ? lineBadge(m[1], LINE_COLOR[m[1]], m[0]) : "";
+    else if (m[0] === "마을버스") html = busIcon(true);
+    else if (m[0] === "버스") html = busIcon(false);
+    else if (m[0] === "도보") html = walkIcon();
+    else { const l = NAMED_LINES.find(x => x[0] === m[0]); html = lineBadge(l[1], l[2], l[0], l[1].length > 1); }
+    found.push({ key, html });
+  }
+  return `<span class="modes">${found.map(f => f.html).join("")}</span>`;
+}
 const TYPE_LABEL = { public: "공공", private: "사설" };
 const isIndoor = c => c.tags.some(t => t.includes("실내"));
 
@@ -395,7 +459,7 @@ function cardHtml(c) {
     </div>
     <div class="transit">
       <span class="min">${c.transit.min}분</span>
-      <span class="route">${esc(c.transit.route)}</span>
+      <span class="route">${routeHtml(c.transit.route)}</span>
     </div>
     <div class="tags">${c.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
     <div class="fit">${fit("weekdayEvening", "평일 저녁")}${fit("weekend", "주말")}</div>
@@ -437,7 +501,7 @@ function rowHtml(c) {
   return `<tr id="row-${c.id}" data-id="${c.id}" class="${c.type}${c.fav ? " fav" : ""}">
     <td class="name-cell"><div class="nm"><span class="num">${numberOf[c.id]}</span>${c.fav ? "★ " : ""}${esc(c.name)}</div>
       <div class="sub2"><span class="type-badge ${c.type}">${TYPE_LABEL[c.type]}</span>${esc(c.operator)}</div></td>
-    <td class="min-cell">${c.transit.min}분</td>
+    <td class="min-cell">${c.transit.min}분${modesHtml(c.transit.route)}</td>
     <td>${esc(comp)}</td>
     ${fit("weekdayEvening")}${fit("weekend")}
     <td class="price-cell" title="${esc(allPrices)}">${esc(pk)} <b>${esc(pv)}</b>${c.prices.length > 1 ? ` <small>외 ${c.prices.length - 1}개</small>` : ""}</td>
@@ -515,7 +579,7 @@ const popupHtml = c => {
   const [pk, pv] = c.prices[0];
   return `<div class="tip">
     <div class="tip-title">${c.fav ? "★ " : ""}${esc(c.name)} <span class="type-badge ${c.type}">${TYPE_LABEL[c.type]}</span></div>
-    <div class="tip-min">영등포구청역에서 ${c.transit.min}분</div>
+    <div class="tip-min">영등포구청역에서 ${c.transit.min}분 ${modesHtml(c.transit.route)}</div>
     <div>${esc(c.tags.slice(0, 3).join(" · "))}</div>
     <div>평일 저녁 ${fit("weekdayEvening")} · 주말 ${fit("weekend")}</div>
     <div>${esc(pk)} ${esc(pv)}</div>
