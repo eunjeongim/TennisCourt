@@ -1,6 +1,6 @@
 // 오프라인 캐시: 페이지·코트 데이터는 '네트워크 우선, 실패 시 캐시', 지도 라이브러리·폰트는 '캐시 우선'
 // 코트 데이터나 페이지를 고치면 CACHE 버전을 올려 주세요.
-const CACHE = "tennis-v7";
+const CACHE = "tennis-v8";
 const CORE = ["./", "./index.html", "./courts.js", "./config.js", "./manifest.webmanifest", "./icons/icon-192.png"];
 
 self.addEventListener("install", e => {

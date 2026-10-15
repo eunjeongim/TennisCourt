@@ -123,6 +123,39 @@
   .vac-time { font-size: 13px; color: var(--muted); }
   .vac-time.stale { color: var(--warn); }
   .vac-head .check { margin-left: auto; }
+  .vac-warn { font-size: 12.5px; color: var(--warn); margin: 8px 0 0; }
+  .btn-ghost { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 9px; padding: 6px 12px; font: 500 13px "Noto Sans KR", sans-serif; cursor: pointer; }
+  .btn-ghost:hover { border-color: var(--accent); background: var(--surface-2); }
+  .bell-off { color: var(--muted); }
+
+  /* 알림 설정 창 */
+  dialog.alert-dlg { border: 0; border-radius: 16px; padding: 0; width: min(560px, calc(100vw - 24px)); max-height: calc(100vh - 40px);
+    background: var(--surface); color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  dialog.alert-dlg::backdrop { background: rgba(0,0,0,.35); }
+  .dlg-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--surface); z-index: 1; }
+  .dlg-head h2 { margin: 0; font-size: 18px; }
+  .dlg-body { padding: 16px 20px; overflow-y: auto; }
+  .dlg-foot { display: flex; gap: 8px; align-items: center; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--border); position: sticky; bottom: 0; background: var(--surface); }
+  .dlg-msg { margin-right: auto; font-size: 13px; color: var(--muted); }
+  .dlg-msg.err { color: var(--no); } .dlg-msg.ok { color: var(--accent); }
+  .set-sec { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .set-sec:last-child { border-bottom: 0; }
+  .set-sec h3 { font-size: 14px; margin: 0 0 8px; }
+  .set-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; margin: 6px 0; }
+  .set-row select { font: 14px "Noto Sans KR", sans-serif; padding: 4px 6px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  .switch { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; }
+  .switch input { appearance: none; width: 40px; height: 22px; border-radius: 11px; background: var(--border); position: relative; cursor: pointer; transition: background .15s; margin: 0; }
+  .switch input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+  .switch input:checked { background: var(--accent); }
+  .switch input:checked::after { transform: translateX(18px); }
+  .court-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 12px; }
+  .court-grid .check { font-size: 13.5px; }
+  .set-links { font-size: 12.5px; }
+  .set-links button { border: 0; background: none; color: var(--accent); cursor: pointer; font: 12.5px "Noto Sans KR", sans-serif; padding: 0 6px 0 0; }
+  .token-box input { width: 100%; font: 13px monospace; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
+  .token-box p { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+  .token-box details summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+  .token-box ol { font-size: 12.5px; color: var(--muted); padding-left: 18px; margin: 6px 0 0; }
   .vac-court { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 14px; }
   .vac-court-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
   .vac-court-head strong { font-size: 15px; cursor: pointer; }
@@ -334,10 +367,12 @@
     <div class="vac-head">
       <h2>🎾 빈자리 현황</h2>
       <span class="vac-time" id="vac-time"></span>
-      <label class="check"><input type="checkbox" id="vac-mine" checked>내 조건만 (평일 18시 이후·주말)</label>
+      <label class="check"><input type="checkbox" id="vac-mine" checked>내 알림 조건만</label>
+      <button type="button" class="btn-ghost" id="alert-open">🔔 알림 설정</button>
     </div>
+    <p class="vac-warn" id="vac-warn" hidden></p>
     <div id="vac-list"></div>
-    <p class="vac-note">목동·안양천·대림운동장만 확인해요. 진한 초록은 내 조건에 맞는 시간이에요. 예약은 각 사이트에서 직접 해 주세요.</p>
+    <p class="vac-note" id="vac-note"></p>
   </section>
 
   </div>
@@ -360,6 +395,41 @@
     <p class="list-hint">행을 누르면 지도에서 위치와 상세 정보를 볼 수 있어요. 머리글(↕)을 누르면 정렬돼요.</p>
   </section>
   <p class="empty" id="empty" hidden>조건에 맞는 코트가 없어요. 필터를 줄여 보세요.</p>
+
+  <dialog class="alert-dlg" id="alert-dlg" aria-labelledby="alert-title">
+    <div class="dlg-head"><h2 id="alert-title">🔔 카카오톡 알림 설정</h2>
+      <button type="button" class="side-close" id="alert-x" aria-label="닫기" style="position:static;float:none;margin:0">×</button></div>
+    <div class="dlg-body">
+      <div class="set-sec">
+        <label class="switch"><input type="checkbox" id="set-enabled">빈자리 알림 받기</label>
+      </div>
+      <div class="set-sec">
+        <h3>시간 조건 <small style="color:var(--muted);font-weight:400">(시작 시각 기준)</small></h3>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-wd-on">평일</label>
+          <select id="set-wd-from" aria-label="평일 시작"></select> 부터 <select id="set-wd-to" aria-label="평일 끝"></select> 전까지</div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-we-on">주말</label>
+          <select id="set-we-from" aria-label="주말 시작"></select> 부터 <select id="set-we-to" aria-label="주말 끝"></select> 전까지</div>
+      </div>
+      <div class="set-sec">
+        <h3>알림 받을 코트</h3>
+        <div class="set-links"><button type="button" id="set-all-on">전체 켜기</button><button type="button" id="set-all-off">전체 끄기</button></div>
+        <div class="court-grid" id="set-courts"></div>
+      </div>
+      <div class="set-sec token-box">
+        <h3>저장 권한 (GitHub 토큰)</h3>
+        <input type="password" id="set-token" placeholder="github_pat_로 시작하는 토큰" autocomplete="off">
+        <p>설정은 GitHub의 alert-settings.json에 저장되고, PC 감시 프로그램이 다음 조회(최대 10분)부터 반영해요. 토큰은 이 기기 브라우저에만 저장돼요.</p>
+        <details><summary>토큰 만드는 법</summary><ol>
+          <li>github.com → 오른쪽 위 프로필 → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token</li>
+          <li>Repository access: <b>Only select repositories → TennisCourt</b></li>
+          <li>Permissions → Repository permissions → <b>Contents: Read and write</b></li>
+          <li>Generate token → 복사해서 위 칸에 붙여 넣기</li></ol></details>
+      </div>
+    </div>
+    <div class="dlg-foot"><span class="dlg-msg" id="set-msg"></span>
+      <button type="button" class="btn-ghost" id="alert-cancel">취소</button>
+      <button type="button" class="btn primary" id="alert-save">저장</button></div>
+  </dialog>
 
   <footer>
     <p>요금과 예약 규칙은 2026-10-15에 각 운영처 안내 페이지와 공개 자료를 보고 정리했습니다. 이용 전 공식 사이트에서 다시 확인하세요.</p>
@@ -764,7 +834,7 @@ function sideVacHtml(id) {
   if (!vacData || !VAC_COURTS[id]) return "";
   const mine = document.getElementById("vac-mine").checked;
   const days = vacDays(id, mine);
-  const rows = vacRowsHtml(days.slice(0, 5));
+  const rows = vacRowsHtml(days.slice(0, 5), id);
   return `<div class="side-vac">
     <p class="label">빈자리${mine ? " (내 조건)" : ""}</p>
     <span class="vac-time">${esc(vacTimeText())}</span>
@@ -798,11 +868,11 @@ document.getElementById("side-close").addEventListener("click", closeSide);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !sideEl.hidden) closeSide(); });
 
 // 빈자리 현황: PC 감시 프로그램이 올리는 vacancies.json을 읽어서 보여준다
-const VAC_COURTS = {
-  mokdong: { name: "목동테니스장", url: "https://www.ycs.or.kr/fmcs/4" },
-  anyangcheon: { name: "안양천 생활체육공원", url: "https://srent.y-sisul.or.kr/page/rent/s04.od.list.asp" },
-  daerim: { name: "대림운동장", url: "https://srent.y-sisul.or.kr/daerim/page/rent/s02.od.list.asp" }
-};
+// 감시 중인 코트 목록은 vacancies.json의 meta에서 받는다 (감시 프로그램이 코트를 늘리면 자동 반영)
+let VAC_COURTS = {};
+const DEFAULT_ALERT = { enabled: true, weekday: { on: true, from: "18:00", to: "23:00" }, weekend: { on: true, from: "06:00", to: "23:00" }, courts: {} };
+let alertSettings = DEFAULT_ALERT;
+const courtAlertOn = cid => alertSettings.courts[cid] ?? cid !== "jd-tennis-club-yeomchang";
 const DOW = "일월화수목금토";
 const MOKDONG_INDOOR = new Set([4, 5, 6]);
 const VAC_SHOW_DAYS = 4;
@@ -811,7 +881,11 @@ const vacExpanded = new Set();
 try { document.getElementById("vac-mine").checked = localStorage.getItem("tennis-vac-mine") !== "0"; } catch (e) {}
 
 const isWeekend = d => [0, 6].includes(new Date(d + "T00:00:00").getDay());
-const fitsMe = s => isWeekend(s.date) || s.start >= "18:00";
+// 알림 설정의 시간 조건(평일/주말 시작~끝)에 맞는 시간대인지
+const fitsMe = s => {
+  const r = isWeekend(s.date) ? alertSettings.weekend : alertSettings.weekday;
+  return !!r.on && s.start >= r.from && s.start < r.to;
+};
 const fmtDay = d => { const t = new Date(d + "T00:00:00"); return `${t.getMonth() + 1}/${t.getDate()}(${DOW[t.getDay()]})`; };
 
 function courtNums(labels) {
@@ -835,7 +909,7 @@ function vacDays(cid, mine) {
   const byDay = new Map();
   (vacData.courts[cid] || [])
     .filter(s => s.date > today || (s.date === today && s.start > nowHM))
-    .filter(s => !mine || fitsMe(s))
+    .filter(s => !mine || (alertSettings.enabled && courtAlertOn(cid) && fitsMe(s)))
     .forEach(s => {
       if (!byDay.has(s.date)) byDay.set(s.date, new Map());
       const key = `${s.start}~${s.end}`;
@@ -846,11 +920,11 @@ function vacDays(cid, mine) {
   return [...byDay.entries()];
 }
 
-function vacRowsHtml(days) {
+function vacRowsHtml(days, cid) {
   return days.map(([d, m]) => `
     <div class="vac-day"><span class="d${isWeekend(d) ? " we" : ""}">${fmtDay(d)}</span>
       <span class="vac-slots">${[...m.entries()].map(([key, { s, labels }]) => {
-        const extra = labels.some(Boolean) ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
+        const extra = cid === "mokdong" ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
         return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}</span>`;
       }).join("")}</span></div>`).join("");
 }
@@ -868,17 +942,26 @@ function renderVacancy() {
     const total = days.reduce((n, [, m]) => n + m.size, 0);
     counts[cid] = total;
     if (!total) return "";
-    const rows = vacRowsHtml(vacExpanded.has(cid) ? days : days.slice(0, VAC_SHOW_DAYS));
+    const rows = vacRowsHtml(vacExpanded.has(cid) ? days : days.slice(0, VAC_SHOW_DAYS), cid);
     const more = days.length > VAC_SHOW_DAYS
       ? `<button type="button" class="vac-more" data-cid="${cid}">${vacExpanded.has(cid) ? "접기" : `날짜 ${days.length - VAC_SHOW_DAYS}개 더 보기`}</button>` : "";
     return `<div class="vac-court">
-      <div class="vac-court-head"><span><strong data-id="${cid}">${info.name}</strong><span class="cnt">${total}건</span></span>
+      <div class="vac-court-head"><span><strong data-id="${cid}">${esc(info.name)}</strong><span class="cnt">${total}건</span>${courtAlertOn(cid) ? "" : ' <span class="bell-off" title="알림 꺼짐">🔕</span>'}</span>
         <a class="btn primary" href="${info.url}" target="_blank" rel="noopener">${ICON.calendar}예약하기</a></div>
       ${rows}${more}</div>`;
   }).join("");
 
   document.getElementById("vac-list").innerHTML = html ||
-    `<p class="vac-empty">${mine ? "지금 내 조건(평일 18시 이후·주말)에 맞는 빈자리가 없어요." : "지금 빈자리가 없어요."}</p>`;
+    `<p class="vac-empty">${mine ? (alertSettings.enabled ? "지금 알림 조건에 맞는 빈자리가 없어요." : "알림이 꺼져 있어요. [알림 설정]에서 켤 수 있어요.") : "지금 빈자리가 없어요."}</p>`;
+  const failed = Object.entries(VAC_COURTS).filter(([, m]) => m.error).map(([, m]) => m.name);
+  const warn = document.getElementById("vac-warn");
+  warn.hidden = !failed.length;
+  warn.textContent = failed.length ? `지금 응답이 없는 사이트: ${failed.join(", ")} (이전 조회 결과를 보여줘요)` : "";
+  const wd = alertSettings.weekday, we = alertSettings.weekend;
+  document.getElementById("vac-note").textContent =
+    `${Object.keys(VAC_COURTS).length}곳을 10분마다 확인해요. 진한 초록은 알림 조건(` +
+    [wd.on ? `평일 ${wd.from}~${wd.to}` : "", we.on ? `주말 ${we.from}~${we.to}` : ""].filter(Boolean).join(", ") +
+    `)에 맞는 시간이에요. 예약은 각 사이트에서 직접 해 주세요.`;
   document.querySelectorAll(".vac-more").forEach(b => b.addEventListener("click", () => {
     vacExpanded.has(b.dataset.cid) ? vacExpanded.delete(b.dataset.cid) : vacExpanded.add(b.dataset.cid);
     renderVacancy();
@@ -910,15 +993,101 @@ function loadVacancy() {
   if (location.protocol === "file:") return;
   fetch(`vacancies.json?t=${Date.now()}`, { cache: "no-store" })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
-    .then(data => { vacData = data; document.getElementById("vacancy").hidden = false; renderVacancy(); })
+    .then(data => {
+      vacData = data;
+      // 예전 형식(meta 없음) 호환: 코트 id만으로 목록 구성
+      VAC_COURTS = data.meta && Object.keys(data.meta).length ? data.meta
+        : Object.fromEntries(Object.keys(data.courts).map(id => [id, { name: (COURTS.find(c => c.id === id) || { name: id }).name, url: "" }]));
+      document.getElementById("vacancy").hidden = false;
+      renderVacancy();
+    })
     .catch(() => {});
 }
 document.getElementById("vac-mine").addEventListener("change", e => {
   try { localStorage.setItem("tennis-vac-mine", e.target.checked ? "1" : "0"); } catch (err) {}
   renderVacancy();
 });
-loadVacancy();
-setInterval(loadVacancy, 5 * 60 * 1000);
+// ---------- 알림 설정 (GitHub alert-settings.json) ----------
+const REPO = "eunjeongim/TennisCourt", SETTINGS_PATH = "alert-settings.json";
+const TOKEN_KEY = "tennis-gh-token";
+const dlg = document.getElementById("alert-dlg");
+const $ = id => document.getElementById(id);
+const HOURS = Array.from({ length: 19 }, (_, i) => `${String(i + 6).padStart(2, "0")}:00`); // 06:00 ~ 24:00
+["set-wd-from", "set-wd-to", "set-we-from", "set-we-to"].forEach(id => {
+  $(id).innerHTML = HOURS.map(h => `<option value="${h === "24:00" ? "24:00" : h}">${h}</option>`).join("");
+});
+
+function loadAlertSettings() {
+  if (location.protocol === "file:") return Promise.resolve();
+  return fetch(`${SETTINGS_PATH}?t=${Date.now()}`, { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(s => {
+      alertSettings = { ...DEFAULT_ALERT, ...s, weekday: { ...DEFAULT_ALERT.weekday, ...s.weekday }, weekend: { ...DEFAULT_ALERT.weekend, ...s.weekend }, courts: s.courts || {} };
+      renderVacancy();
+    })
+    .catch(() => {});
+}
+
+function fillDialog() {
+  const a = alertSettings;
+  $("set-enabled").checked = a.enabled;
+  $("set-wd-on").checked = a.weekday.on; $("set-wd-from").value = a.weekday.from; $("set-wd-to").value = a.weekday.to;
+  $("set-we-on").checked = a.weekend.on; $("set-we-from").value = a.weekend.from; $("set-we-to").value = a.weekend.to;
+  $("set-courts").innerHTML = Object.entries(VAC_COURTS).map(([cid, m]) =>
+    `<label class="check"><input type="checkbox" data-cid="${cid}"${courtAlertOn(cid) ? " checked" : ""}>${esc(m.name)}</label>`).join("");
+  try { $("set-token").value = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) {}
+  setMsg("");
+}
+function readDialog() {
+  return {
+    enabled: $("set-enabled").checked,
+    weekday: { on: $("set-wd-on").checked, from: $("set-wd-from").value, to: $("set-wd-to").value },
+    weekend: { on: $("set-we-on").checked, from: $("set-we-from").value, to: $("set-we-to").value },
+    courts: Object.fromEntries([...$("set-courts").querySelectorAll("input")].map(i => [i.dataset.cid, i.checked])),
+    _설명: "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
+  };
+}
+function setMsg(text, kind = "") { const m = $("set-msg"); m.textContent = text; m.className = `dlg-msg ${kind}`; }
+
+const b64 = str => btoa(unescape(encodeURIComponent(str)));
+async function saveAlertSettings() {
+  const next = readDialog();
+  if (next.weekday.from >= next.weekday.to || next.weekend.from >= next.weekend.to) return setMsg("끝 시각은 시작 시각보다 늦어야 해요.", "err");
+  const token = $("set-token").value.trim();
+  if (!token) return setMsg("저장하려면 GitHub 토큰이 필요해요. 아래 '토큰 만드는 법'을 참고하세요.", "err");
+  try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+  setMsg("저장 중…");
+  const api = `https://api.github.com/repos/${REPO}/contents/${SETTINGS_PATH}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+  try {
+    const cur = await fetch(`${api}?ref=main&t=${Date.now()}`, { headers, cache: "no-store" });
+    if (cur.status === 401) throw new Error("토큰이 올바르지 않아요.");
+    const sha = cur.ok ? (await cur.json()).sha : undefined;
+    const res = await fetch(api, {
+      method: "PUT", headers,
+      body: JSON.stringify({ message: "chore: 알림 설정 변경 (웹페이지)", content: b64(JSON.stringify(next, null, 2) + "\n"), sha, branch: "main" })
+    });
+    if (res.status === 403 || res.status === 404) throw new Error("토큰에 TennisCourt 저장소 Contents 쓰기 권한이 없어요.");
+    if (!res.ok) throw new Error(`저장 실패 (${res.status})`);
+    alertSettings = { ...next };
+    renderVacancy();
+    setMsg("저장했어요. 다음 조회(최대 10분)부터 적용돼요.", "ok");
+    setTimeout(() => dlg.close(), 1200);
+  } catch (err) {
+    setMsg(err.message || "저장하지 못했어요.", "err");
+  }
+}
+
+$("alert-open").addEventListener("click", () => { fillDialog(); dlg.showModal(); });
+$("alert-x").addEventListener("click", () => dlg.close());
+$("alert-cancel").addEventListener("click", () => dlg.close());
+$("alert-save").addEventListener("click", saveAlertSettings);
+$("set-all-on").addEventListener("click", () => $("set-courts").querySelectorAll("input").forEach(i => { i.checked = true; }));
+$("set-all-off").addEventListener("click", () => $("set-courts").querySelectorAll("input").forEach(i => { i.checked = false; }));
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });  // 바깥 클릭 시 닫기
+
+loadAlertSettings().then(loadVacancy);
+setInterval(() => { loadAlertSettings(); loadVacancy(); }, 5 * 60 * 1000);
 
 applyView();  // 상세 패널 등 모든 준비가 끝난 뒤 보기 적용
 

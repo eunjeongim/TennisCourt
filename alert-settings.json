@@ -1,0 +1,34 @@
+{
+  "enabled": true,
+  "weekday": {
+    "on": true,
+    "from": "18:00",
+    "to": "23:00"
+  },
+  "weekend": {
+    "on": true,
+    "from": "06:00",
+    "to": "23:00"
+  },
+  "courts": {
+    "mokdong": true,
+    "anyangcheon": true,
+    "daerim": true,
+    "jangmi-eunpyeong": true,
+    "seonjeong-eunpyeong": true,
+    "eunpyeong-gumin": true,
+    "ujangsan-tennis": true,
+    "gangseo-banghwa-tennis": true,
+    "hwanggeumnae-tennis": true,
+    "eungbong-sports-park-tennis": true,
+    "majang-tennis": true,
+    "gwanak-gumin": true,
+    "gocheok-park-tennis": true,
+    "bongeun-tennis": true,
+    "bucheon-stadium-tennis": true,
+    "bucheon-gymnasium-tennis-hard": true,
+    "bucheon-indoor-tennis": true,
+    "jd-tennis-club-yeomchang": false
+  },
+  "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
+}
