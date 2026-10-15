@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="테니스코트">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>영등포 테니스코트</title>
+<title>TennisCourt Reservation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -112,6 +112,30 @@
   .type-badge.private { background: var(--private-soft); color: var(--private); }
   .tip .type-badge { margin: 0 0 0 4px; }
   .empty { text-align: center; color: var(--muted); padding: 32px 0; }
+
+  .vac { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); padding: 18px; margin-bottom: 24px; }
+  .vac-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+  .vac-head h2 { font-size: 18px; margin: 0; }
+  .vac-time { font-size: 13px; color: var(--muted); }
+  .vac-time.stale { color: var(--warn); }
+  .vac-head .check { margin-left: auto; }
+  .vac-court { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 14px; }
+  .vac-court-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .vac-court-head strong { font-size: 15px; cursor: pointer; }
+  .vac-court-head .cnt { color: var(--accent); font-weight: 700; margin-left: 6px; font-size: 14px; }
+  .vac-day { display: grid; grid-template-columns: 76px 1fr; gap: 4px 10px; padding: 5px 0; font-size: 13px; }
+  .vac-day .d { font-weight: 700; color: var(--text); padding-top: 3px; }
+  .vac-day .d.we { color: #c0392b; }
+  .vac-slots { display: flex; flex-wrap: wrap; gap: 5px; }
+  .slot { background: var(--accent-soft); color: var(--accent); border-radius: 7px; padding: 3px 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .slot small { color: var(--muted); margin-left: 3px; }
+  .slot.fit { background: var(--accent); color: #fff; }
+  .slot.fit small { color: rgba(255,255,255,.8); }
+  .vac-more { border: 0; background: none; color: var(--accent); font: 500 13px "Noto Sans KR", sans-serif; cursor: pointer; padding: 6px 0 0; }
+  .vac-empty { color: var(--muted); font-size: 14px; margin: 12px 0 0; }
+  .vac-note { color: var(--muted); font-size: 12px; margin: 12px 0 0; }
+  .vac-badge { display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 999px; padding: 1px 9px; cursor: pointer; }
+  @media (max-width: 520px) { .vac-day { grid-template-columns: 1fr; } }
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
   .card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px;
@@ -201,6 +225,16 @@
     <span><i class="dot" style="background:var(--private)"></i>사설 코트</span>
   </div>
   <p class="map-note" id="map-note"></p>
+
+  <section class="vac" id="vacancy" hidden>
+    <div class="vac-head">
+      <h2>🎾 빈자리 현황</h2>
+      <span class="vac-time" id="vac-time"></span>
+      <label class="check"><input type="checkbox" id="vac-mine" checked>내 조건만 (평일 18시 이후·주말)</label>
+    </div>
+    <div id="vac-list"></div>
+    <p class="vac-note">목동·안양천·대림운동장만 확인해요. 진한 초록은 내 조건에 맞는 시간이에요. 예약은 각 사이트에서 직접 해 주세요.</p>
+  </section>
 
   <section class="cards" id="cards"></section>
   <p class="empty" id="empty" hidden>조건에 맞는 코트가 없어요. 필터를 줄여 보세요.</p>
@@ -455,6 +489,113 @@ function highlight(id, fromCard) {
 }
 
 document.querySelectorAll(".card-head").forEach(el => el.addEventListener("click", () => highlight(el.dataset.id, true)));
+
+// 빈자리 현황: PC 감시 프로그램이 올리는 vacancies.json을 읽어서 보여준다
+const VAC_COURTS = {
+  mokdong: { name: "목동테니스장", url: "https://www.ycs.or.kr/fmcs/4" },
+  anyangcheon: { name: "안양천 생활체육공원", url: "https://srent.y-sisul.or.kr/page/rent/s04.od.list.asp" },
+  daerim: { name: "대림운동장", url: "https://srent.y-sisul.or.kr/daerim/page/rent/s02.od.list.asp" }
+};
+const DOW = "일월화수목금토";
+const MOKDONG_INDOOR = new Set([4, 5, 6]);
+const VAC_SHOW_DAYS = 4;
+let vacData = null;
+const vacExpanded = new Set();
+try { document.getElementById("vac-mine").checked = localStorage.getItem("tennis-vac-mine") !== "0"; } catch (e) {}
+
+const isWeekend = d => [0, 6].includes(new Date(d + "T00:00:00").getDay());
+const fitsMe = s => isWeekend(s.date) || s.start >= "18:00";
+const fmtDay = d => { const t = new Date(d + "T00:00:00"); return `${t.getMonth() + 1}/${t.getDate()}(${DOW[t.getDay()]})`; };
+
+function courtNums(labels) {
+  const nums = [...new Set(labels.map(l => parseInt((l.match(/\d+/) || [])[0], 10)).filter(n => !isNaN(n)))].sort((a, b) => a - b);
+  const out = nums.filter(n => !MOKDONG_INDOOR.has(n)), ind = nums.filter(n => MOKDONG_INDOOR.has(n));
+  return [out.length ? `${out.join("·")}번` : "", ind.length ? `실내 ${ind.join("·")}번` : ""].filter(Boolean).join(", ");
+}
+
+function renderVacancy() {
+  if (!vacData) return;
+  const mine = document.getElementById("vac-mine").checked;
+  const now = new Date();
+  const checked = new Date(vacData.checked_at);
+  const ageMin = Math.round((now - checked) / 60000);
+  const timeEl = document.getElementById("vac-time");
+  timeEl.textContent = `마지막 확인 ${checked.getMonth() + 1}/${checked.getDate()} ${String(checked.getHours()).padStart(2, "0")}:${String(checked.getMinutes()).padStart(2, "0")}` +
+    (ageMin > 90 ? " · PC가 꺼져 있어 최신이 아닐 수 있어요" : "");
+  timeEl.classList.toggle("stale", ageMin > 90);
+
+  const today = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10); // 로컬 날짜
+  const nowHM = now.toTimeString().slice(0, 5);
+  const counts = {};
+  const html = Object.entries(VAC_COURTS).map(([cid, info]) => {
+    const slots = (vacData.courts[cid] || [])
+      .filter(s => s.date > today || (s.date === today && s.start > nowHM))
+      .filter(s => !mine || fitsMe(s));
+    // 같은 날짜·시간은 한 칩으로 묶는다 (목동은 코트 번호 표시)
+    const byDay = new Map();
+    slots.forEach(s => {
+      if (!byDay.has(s.date)) byDay.set(s.date, new Map());
+      const key = `${s.start}~${s.end}`;
+      const m = byDay.get(s.date);
+      if (!m.has(key)) m.set(key, { s, labels: [] });
+      m.get(key).labels.push(s.court || "");
+    });
+    const total = [...byDay.values()].reduce((n, m) => n + m.size, 0);
+    counts[cid] = total;
+    if (!total) return "";
+    const days = [...byDay.entries()];
+    const shown = vacExpanded.has(cid) ? days : days.slice(0, VAC_SHOW_DAYS);
+    const rows = shown.map(([d, m]) => `
+      <div class="vac-day"><span class="d${isWeekend(d) ? " we" : ""}">${fmtDay(d)}</span>
+        <span class="vac-slots">${[...m.entries()].map(([key, { s, labels }]) => {
+          const extra = labels.some(Boolean) ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
+          return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}</span>`;
+        }).join("")}</span></div>`).join("");
+    const more = days.length > VAC_SHOW_DAYS
+      ? `<button type="button" class="vac-more" data-cid="${cid}">${vacExpanded.has(cid) ? "접기" : `날짜 ${days.length - VAC_SHOW_DAYS}개 더 보기`}</button>` : "";
+    return `<div class="vac-court">
+      <div class="vac-court-head"><span><strong data-id="${cid}">${info.name}</strong><span class="cnt">${total}건</span></span>
+        <a class="btn primary" href="${info.url}" target="_blank" rel="noopener">${ICON.calendar}예약하기</a></div>
+      ${rows}${more}</div>`;
+  }).join("");
+
+  document.getElementById("vac-list").innerHTML = html ||
+    `<p class="vac-empty">${mine ? "지금 내 조건(평일 18시 이후·주말)에 맞는 빈자리가 없어요." : "지금 빈자리가 없어요."}</p>`;
+  document.querySelectorAll(".vac-more").forEach(b => b.addEventListener("click", () => {
+    vacExpanded.has(b.dataset.cid) ? vacExpanded.delete(b.dataset.cid) : vacExpanded.add(b.dataset.cid);
+    renderVacancy();
+  }));
+  document.querySelectorAll(".vac-court-head strong").forEach(el => el.addEventListener("click", () => highlight(el.dataset.id, false)));
+
+  // 코트 카드에도 빈자리 수 배지
+  Object.keys(VAC_COURTS).forEach(cid => {
+    const op = document.querySelector(`#card-${cid} .card-head > div`);
+    if (!op) return;
+    let badge = op.querySelector(".vac-badge");
+    if (!counts[cid]) { badge && badge.remove(); return; }
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "vac-badge";
+      badge.addEventListener("click", e => { e.stopPropagation(); document.getElementById("vacancy").scrollIntoView({ behavior: "smooth" }); });
+      op.appendChild(badge);
+    }
+    badge.textContent = `빈자리 ${counts[cid]}건${mine ? " (내 조건)" : ""}`;
+  });
+}
+
+function loadVacancy() {
+  if (location.protocol === "file:") return;
+  fetch(`vacancies.json?t=${Date.now()}`, { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => { vacData = data; document.getElementById("vacancy").hidden = false; renderVacancy(); })
+    .catch(() => {});
+}
+document.getElementById("vac-mine").addEventListener("change", e => {
+  try { localStorage.setItem("tennis-vac-mine", e.target.checked ? "1" : "0"); } catch (err) {}
+  renderVacancy();
+});
+loadVacancy();
+setInterval(loadVacancy, 5 * 60 * 1000);
 
 // 웹앱(홈 화면 추가) 오프라인 캐시
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
