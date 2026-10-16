@@ -8,7 +8,7 @@
 
 실행 위치(MONITOR_SCOPE)에 따라 맡는 코트가 다르다. 겹치지 않으므로 알림이 두 번 가지 않는다.
 - cloud: GitHub Actions(해외 서버). 해외 접속이 되는 목동·공단·JD. 노트북이 꺼져 있어도 동작.
-- pc   : 노트북 작업 스케줄러. 해외 접속을 막는 영등포 공단·부천.
+- pc   : 노트북 작업 스케줄러. 해외 접속을 막는 영등포 공단·부천·관악·강서.
 """
 import json
 import logging
@@ -42,9 +42,12 @@ COURT_INFO = {
     "daerim": ("대림운동장", yeongdeungpo.booking_url("daerim")),
     **extra_sources.court_info(),
 }
+# 해외(GitHub) 서버 접속을 막는 사이트: 영등포 공단, 부천, 관악(차단 페이지 응답), 강서(국내에서 먼저 복구될 가능성)
+PC_ONLY = {"anyangcheon", "daerim", *extra_sources.BUCHEON_COURTS,
+           "gwanak-gumin", "ujangsan-tennis", "gangseo-banghwa-tennis", "hwanggeumnae-tennis"}
 SCOPE_COURTS = {
-    "cloud": {"mokdong", *extra_sources.FMCS_COURTS, extra_sources.JD_ID},
-    "pc": {"anyangcheon", "daerim", *extra_sources.BUCHEON_COURTS},
+    "cloud": set(COURT_INFO) - PC_ONLY,
+    "pc": PC_ONLY,
 }
 SCOPE_COURTS["all"] = set(COURT_INFO)
 # 알림 기본값이 꺼져 있는 코트 (사설이라 빈자리가 늘 많음)

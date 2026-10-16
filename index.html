@@ -931,7 +931,7 @@ function vacTimeText() {
   const { cloud, pc } = vacData.checked;
   const parts = [];
   if (cloud) parts.push(`마지막 확인 ${fmtTime(cloud)}${isStale(cloud) ? " (지연 중)" : ""}`);
-  if (pc && isStale(pc)) parts.push(`안양천·대림·부천은 노트북이 꺼져 있어 ${fmtTime(pc)} 기준`);
+  if (pc && isStale(pc)) parts.push(`안양천·대림·부천·관악·강서는 노트북이 꺼져 있어 ${fmtTime(pc)} 기준`);
   else if (!cloud && pc) parts.push(`마지막 확인 ${fmtTime(pc)}`);
   return parts.join(" · ");
 }
