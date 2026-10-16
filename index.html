@@ -276,7 +276,8 @@
   .transit .min small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); line-height: 1.2; }
   .transit.alt { background: transparent; border: 1px dashed var(--border); padding: 6px 12px; margin-top: -6px; }
   .transit.alt .min { font-size: 17px; color: var(--muted); }
-  .min-cell .o2 { display: block; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .min-cell .o1 { display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .min-cell .o2 { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 2px; }
   .origin-seg button { padding: 6px 10px; }
   .pin.home.gd { background: #7b5cd6; }
   .origin-mk { position: relative; width: 22px; height: 22px; cursor: pointer; }
@@ -398,7 +399,7 @@
   </nav>
 
   <div class="filters" role="group" aria-label="코트 필터">
-    <div class="seg origin-seg" aria-label="출발지"><button type="button" data-origin="both">둘 다</button><button type="button" data-origin="ydp">영등포구청</button><button type="button" data-origin="gd">공덕</button></div>
+    <div class="seg origin-seg" aria-label="출발지"><button type="button" data-origin="both">전체</button><button type="button" data-origin="ydp">영등포구청</button><button type="button" data-origin="gd">공덕</button></div>
     <div class="seg" aria-label="종류">
       <button type="button" data-type="all">전체</button>
       <button type="button" data-type="public">공공</button>
@@ -551,8 +552,8 @@ try { origin = localStorage.getItem("tennis-origin") || "both"; } catch (e) {}
 const nearer = c => ((c.transit_gongdeok || {}).min ?? 999) < c.transit.min ? "gd" : "ydp";
 const minFrom = (c, o) => o === "both" ? minFrom(c, nearer(c)) : o === "gd" ? ((c.transit_gongdeok || {}).min ?? null) : c.transit.min;
 const routeFrom = (c, o) => o === "both" ? routeFrom(c, nearer(c)) : o === "gd" ? (c.transit_gongdeok || {}).route : c.transit.route;
-// 화면에 보여줄 출발지 순서: 둘 다면 가까운 역 먼저, 아니면 고른 역 먼저
-const originOrder = c => origin === "both" ? [nearer(c), nearer(c) === "ydp" ? "gd" : "ydp"] : [origin, origin === "ydp" ? "gd" : "ydp"];
+// 화면에 보여줄 출발지 순서: 항상 더 가까운 역을 메인(위), 다른 역을 아래에
+const originOrder = c => [nearer(c), nearer(c) === "ydp" ? "gd" : "ydp"];
 const bothMins = c => ["ydp", "gd"].map(o => `${ORIGINS[o].short} ${minFrom(c, o) ?? "–"}분`).join(" · ");
 const tmin = c => minFrom(c, origin) ?? 999;
 const COURTS = window.COURTS || [];
@@ -653,7 +654,7 @@ function cardHtml(c) {
     </div>
     ${originOrder(c).map((o, i) => {
       const m = minFrom(c, o);
-      return `<div class="transit${i === 0 || origin === "both" ? "" : " alt"}${i > 0 && origin === "both" ? " second" : ""}">
+      return `<div class="transit${i === 0 ? "" : " alt"}">
         <span class="min"><small>${ORIGINS[o].short}</small>${m != null ? `${m}분` : "–"}</span>
         <span class="route">${m != null ? routeHtml(routeFrom(c, o)) : "소요시간 확인 중"}</span>
       </div>`;
@@ -698,8 +699,8 @@ function rowHtml(c) {
   return `<tr id="row-${c.id}" data-id="${c.id}" class="${c.type}${isFav(c) ? " fav" : ""}">
     <td class="name-cell"><div class="nm"><span class="num">${numberOf[c.id]}</span>${esc(c.name)}${favBtn(c)}</div>
       <div class="sub2"><span class="type-badge ${c.type}">${TYPE_LABEL[c.type]}</span>${esc(c.operator)}</div></td>
-    <td class="min-cell">${minFrom(c, origin) != null ? `${minFrom(c, origin)}분` : "–"}${minFrom(c, origin) != null ? modesHtml(routeFrom(c, origin)) : ""}
-      <span class="o2">${origin === "both" ? bothMins(c) : `${ORIGINS[originOrder(c)[1]].short} ${minFrom(c, originOrder(c)[1]) ?? "–"}분`}</span></td>
+    <td class="min-cell">${(([a, b]) => `<span class="o1">${ORIGINS[a].short}</span>${minFrom(c, a) ?? "–"}분${modesHtml(routeFrom(c, a))}
+      <span class="o2">${ORIGINS[b].short} ${minFrom(c, b) ?? "–"}분</span>`)(originOrder(c))}</td>
     <td>${esc(comp)}</td>
     ${fit("weekdayEvening")}${fit("weekend")}
     <td class="price-cell" title="${esc(allPrices)}">${esc(pk)} <b>${esc(pv)}</b>${c.prices.length > 1 ? ` <small>외 ${c.prices.length - 1}개</small>` : ""}</td>
@@ -1452,7 +1453,7 @@ setInterval(() => { loadAlertSettings(); loadVacancy(); }, 5 * 60 * 1000);
 function applyOrigin() {
   document.querySelectorAll(".origin-seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.origin === origin));
   const th = document.getElementById("th-min");
-  if (th) th.textContent = origin === "both" ? "가까운 역에서" : `${ORIGINS[origin].name}에서`;
+  if (th) th.textContent = origin === "both" ? "소요시간 (가까운 역)" : `${ORIGINS[origin].name}에서`;
   renderList();
   applyFilters();
   if (sideId) openSide(sideId);
