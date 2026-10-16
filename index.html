@@ -336,6 +336,11 @@
   .side .card { border: 0; box-shadow: none; padding: 0; }
   .side .card-head { cursor: default; }
   .side-vac { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 12px; }
+  .court-photo { margin: 2px 0 12px; }
+  .sky { height: 180px; border-radius: 10px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--border); }
+  .photo-cap { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  .photo-links { display: flex; gap: 10px; flex: none; }
+  .photo-links a { color: var(--accent); font-weight: 700; text-decoration: none; }
   .side-vac .vac-day { grid-template-columns: 1fr; }
   .side-vac .vac-time { display: block; margin-bottom: 6px; }
   /* 선택한 코트: 핀을 키우고 튀어 오르게, 위에 이름표 */
@@ -988,14 +993,43 @@ function sideVacHtml(id) {
   </div>` + sidePublicHtml(id);
 }
 
+// 코트 모습: 카카오맵 항공사진(스카이뷰). 카카오맵이 없으면 Esri 위성사진으로 대신 보여준다.
+function photoHtml(c) {
+  const core = c.name.replace(/\(.*?\)/g, "").trim();
+  return `<div class="court-photo">
+    <div class="sky" id="sky"></div>
+    <div class="photo-cap"><span>항공사진 (촬영 시점에 따라 실제와 다를 수 있어요${c.approx ? ", 위치 근사" : ""})</span>
+      <span class="photo-links"><a href="https://map.kakao.com/link/roadview/${c.lat},${c.lng}" target="_blank" rel="noopener">로드뷰</a>
+      <a href="https://map.kakao.com/link/search/${encodeURIComponent(core)}" target="_blank" rel="noopener">사진·후기</a></span></div>
+  </div>`;
+}
+let skyMini = null;
+function renderSky(c) {
+  const el = document.getElementById("sky");
+  if (!el) return;
+  if (window.kakao && kakao.maps && kakao.maps.StaticMap) {
+    const pos = new kakao.maps.LatLng(c.lat, c.lng);
+    new kakao.maps.StaticMap(el, { center: pos, level: c.approx ? 3 : 2, mapTypeId: kakao.maps.MapTypeId.SKYVIEW, marker: { position: pos } });
+  } else if (window.L) {
+    if (skyMini) { skyMini.remove(); skyMini = null; }
+    skyMini = L.map(el, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, keyboard: false })
+      .setView([c.lat, c.lng], c.approx ? 17 : 18);
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19 }).addTo(skyMini);
+    L.circleMarker([c.lat, c.lng], { radius: 7, color: "#fff", weight: 2, fillColor: "#d7e84b", fillOpacity: 1 }).addTo(skyMini);
+  }
+}
+
 function openSide(id) {
   const c = COURTS.find(x => x.id === id);
   if (!c) return;
   sideId = id;
+  const card = cardHtml(c).replace(` id="card-${c.id}"`, "").replace(' title="지도에서 보기"', "");
+  const at = card.indexOf('<div class="transit');
   document.getElementById("side-body").innerHTML =
-    cardHtml(c).replace(` id="card-${c.id}"`, "").replace(' title="지도에서 보기"', "") + sideVacHtml(id);
+    (at > 0 ? card.slice(0, at) + photoHtml(c) + card.slice(at) : photoHtml(c) + card) + sideVacHtml(id);
   const wasHidden = sideEl.hidden;
   sideEl.hidden = false;
+  renderSky(c);
   if (!wasHidden) sideEl.scrollTop = 0;
   document.querySelectorAll(".pin[data-id]").forEach(el => el.classList.toggle("selected", el.dataset.id === id));
   mapApi.select(id);
