@@ -295,7 +295,22 @@
   .side-vac { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 12px; }
   .side-vac .vac-day { grid-template-columns: 1fr; }
   .side-vac .vac-time { display: block; margin-bottom: 6px; }
-  .pin.selected { outline: 3px solid var(--text); outline-offset: 1px; }
+  /* 선택한 코트: 핀을 키우고 튀어 오르게, 위에 이름표 */
+  .k-pin, .leaflet-marker-icon { position: relative; }
+  .pin.selected { transform: rotate(-45deg) scale(1.35); box-shadow: 0 0 0 4px rgba(255,255,255,.9), 0 0 0 7px var(--text), 0 4px 12px rgba(0,0,0,.4); animation: pin-bounce .9s ease-out 2; }
+  @keyframes pin-bounce {
+    0%, 100% { transform: rotate(-45deg) scale(1.35) translate(0, 0); }
+    35% { transform: rotate(-45deg) scale(1.35) translate(7px, -7px); }
+    60% { transform: rotate(-45deg) scale(1.35) translate(0, 0); }
+    80% { transform: rotate(-45deg) scale(1.35) translate(3px, -3px); }
+  }
+  .pin-label {
+    display: none; position: absolute; left: 50%; bottom: calc(100% + 16px); transform: translateX(-50%);
+    background: var(--text); color: var(--surface); font: 700 12.5px/1.3 "Noto Sans KR", sans-serif; white-space: nowrap;
+    padding: 4px 9px; border-radius: 7px; box-shadow: 0 2px 8px rgba(0,0,0,.3); pointer-events: none;
+  }
+  .pin-label::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--text); }
+  .pin.selected + .pin-label { display: block; }
   @media (max-width: 720px) {
     .side {
       position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 72vh; z-index: 1000;
@@ -656,9 +671,11 @@ const popupHtml = c => {
     <div class="tip-hint">클릭하면 상세 정보로 이동</div>
   </div>`;
 };
-const pinHtml = c => `<div class="${pinClass(c)}" data-id="${c.id}"><b>${numberOf[c.id]}</b></div>`;
+const pinHtml = c => `<div class="${pinClass(c)}" data-id="${c.id}"><b>${numberOf[c.id]}</b></div><span class="pin-label">${esc(c.name)}</span>`;
 const TIP_FLIP_Y = 170; // 핀이 지도 위쪽 이 픽셀 안에 있으면 말풍선을 아래로 띄움
-let mapApi = { setVisible() {}, focus() {}, reveal() {}, relayout() {} };
+let mapApi = { setVisible() {}, focus() {}, reveal() {}, relayout() {}, select() {} };
+// 아이폰처럼 아래 시트가 지도를 가리는 화면에서 핀을 지도 위쪽으로 올릴 거리(px)
+const sheetLift = () => isSheet() ? Math.round(document.getElementById("map").clientHeight * 0.13) : 0;
 
 function initKakaoMap() {
   const { maps } = kakao;
@@ -728,8 +745,14 @@ function initKakaoMap() {
     },
     focus(id) {
       bubble.setMap(null);
+      overlays[id].setMap(map);  // 필터로 숨겨진 코트라도 선택하면 보여준다
       map.setLevel(4);
-      map.panTo(overlays[id].getPosition());
+      map.setCenter(overlays[id].getPosition());
+      const lift = sheetLift();
+      if (lift) map.panBy(0, lift);
+    },
+    select(id) {
+      sorted.forEach(c => overlays[c.id].setZIndex(c.id === id ? 30 : c.fav ? 6 : 4));
     },
     relayout() { map.relayout(); },
     reveal(id) {
@@ -782,7 +805,13 @@ function initLeafletMap(reason) {
       map.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 14 });
     },
     focus(id) {
-      map.flyTo(markers[id].getLatLng(), 15, { duration: 0.6 });
+      markers[id].addTo(map);  // 필터로 숨겨진 코트라도 선택하면 보여준다
+      map.setView(markers[id].getLatLng(), 15, { animate: false });
+      const lift = sheetLift();
+      if (lift) map.panBy([0, lift], { animate: false });
+    },
+    select(id) {
+      sorted.forEach(c => markers[c.id].setZIndexOffset(c.id === id ? 3000 : c.fav ? 500 : 0));
     },
     relayout() { map.invalidateSize(); },
     reveal(id) {
@@ -853,6 +882,7 @@ function openSide(id) {
   sideEl.hidden = false;
   if (!wasHidden) sideEl.scrollTop = 0;
   document.querySelectorAll(".pin[data-id]").forEach(el => el.classList.toggle("selected", el.dataset.id === id));
+  mapApi.select(id);
   document.querySelectorAll(".card").forEach(el => el.classList.toggle("active", el.id === `card-${id}`));
   setTimeout(() => mapApi.reveal(id), 50);
 }
@@ -861,6 +891,7 @@ function closeSide() {
   sideEl.hidden = true;
   sideId = null;
   document.querySelectorAll(".pin.selected").forEach(el => el.classList.remove("selected"));
+  mapApi.select(null);
   document.querySelectorAll(".card.active").forEach(el => el.classList.remove("active"));
 }
 
