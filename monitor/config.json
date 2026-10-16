@@ -1,13 +1,5 @@
 {
-  "_설명": "빈자리 알림 설정. 시간은 24시간제 문자열.",
-  "weekday_from": "18:00",
-  "weekend_all_day": true,
-  "weekend_from": "06:00",
-  "days_ahead": 31,
+  "_설명": "감시 프로그램 내부 설정. 알림 조건(시간대·코트·즐겨찾기 등)은 웹페이지의 🔔 알림 설정(alert-settings.json)에서 바꿔요.",
   "next_month_open_day": 25,
-  "courts": {
-    "mokdong": true,
-    "anyangcheon": true,
-    "daerim": true
-  }
+  "courts": {}
 }

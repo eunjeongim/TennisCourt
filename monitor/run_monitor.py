@@ -12,6 +12,7 @@
 """
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 import re
 import sys
@@ -34,8 +35,9 @@ SCOPE = os.environ.get("MONITOR_SCOPE", "pc")
 STATE = HERE / ("state-cloud.json" if SCOPE == "cloud" else "state.json")
 SETTINGS = publish.SITE / "alert-settings.json"
 WEEKDAY = "월화수목금토일"
-logging.basicConfig(filename=HERE / "monitor.log", level=logging.INFO, encoding="utf-8",
-                    format="%(asctime)s %(levelname)s %(message)s")
+# 로그는 300KB씩 최대 2개까지만 남긴다
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s",
+                    handlers=[RotatingFileHandler(HERE / "monitor.log", maxBytes=300_000, backupCount=1, encoding="utf-8")])
 
 COURT_INFO = {
     "mokdong": ("목동", mokdong.RENT_URL),

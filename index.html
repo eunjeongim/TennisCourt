@@ -902,7 +902,7 @@ const KAKAO_KEY = (window.TENNIS_CONFIG && window.TENNIS_CONFIG.kakaoJsKey) || "
 if (!KAKAO_KEY) {
   initLeafletMap("카카오맵 키가 없어 임시 지도(OSM)를 보여주고 있어요. config.js에 키를 넣으면 카카오맵으로 바뀌어요.");
 } else if (location.protocol === "file:") {
-  initLeafletMap("카카오맵은 등록한 주소에서만 열려요. start-server.bat을 실행해 http://localhost:8080 으로 열어 주세요.");
+  initLeafletMap("카카오맵은 등록한 주소에서만 열려요. https://eunjeongim.github.io/TennisCourt/ 에서 열어 주세요.");
 } else {
   const sdk = document.createElement("script");
   sdk.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(KAKAO_KEY)}&autoload=false`;
