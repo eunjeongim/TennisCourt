@@ -59,6 +59,10 @@ window.COURTS = [
       "reserve": "https://www.ycs.or.kr",
       "info": "https://www.ycs.or.kr/fmcs/34",
       "tel": "02-2643-0686"
+    },
+    "transit_gongdeok": {
+      "min": 26,
+      "route": "5호선 공덕 → 오목교 (8정거장) + 도보 7분"
     }
   },
   {
@@ -113,6 +117,10 @@ window.COURTS = [
       "reserve": "https://srent.y-sisul.or.kr/page/rent/s04.od.list.asp",
       "info": "https://srent.y-sisul.or.kr/page/rent/s04.info.asp",
       "tel": "010-7389-2988"
+    },
+    "transit_gongdeok": {
+      "min": 35,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 → 선유도 (3정거장) + 도보 약 15분 (1번 출구)"
     }
   },
   {
@@ -163,6 +171,10 @@ window.COURTS = [
       "reserve": "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S261008132544106716",
       "info": "https://yeyak.seoul.go.kr",
       "tel": "010-5488-9464"
+    },
+    "transit_gongdeok": {
+      "min": 27,
+      "route": "5호선 공덕 → 영등포구청 (6정거장) 환승 2호선 → 대림 (3정거장) · 10번 출구 바로 앞"
     }
   },
   {
@@ -216,6 +228,10 @@ window.COURTS = [
       "reserve": "https://srent.y-sisul.or.kr/daerim/page/rent/s02.od.list.asp",
       "info": "https://srent.y-sisul.or.kr/daerim/page/rent/s02.info.asp",
       "tel": "010-2640-8895"
+    },
+    "transit_gongdeok": {
+      "min": 36,
+      "route": "5호선 공덕 → 영등포구청 (6정거장) 환승 2호선 → 대림 (3정거장) + 도보 약 10분"
     }
   },
   {
@@ -273,7 +289,11 @@ window.COURTS = [
       "https://seoul-tennis.com/dongjak-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1471",
       "https://courtskorea.com/courts/boramae-tennis-court-1beonkoteu-yagan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 36,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 → 샛강 (1정거장) 환승 신림선 → 보라매공원 (5정거장) + 도보 7분"
+    }
   },
   {
     "id": "dongjak-tennis",
@@ -326,7 +346,11 @@ window.COURTS = [
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1581",
       "https://www.idongjak.or.kr/html/facility/facility01_06_01.php",
       "https://courtskorea.com/courts/dongjak-tennis-court-weekday-jeonyeokhaljeung-18si-22si-5beonkoteu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 24,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 급행 → 동작 (2정거장) + 도보 7분"
+    }
   },
   {
     "id": "noryangjin-park",
@@ -371,7 +395,11 @@ window.COURTS = [
     },
     "sources": [
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=862"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 30,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 대방 (1정거장) + 도보 12분"
+    }
   },
   {
     "id": "seoul-yongma",
@@ -422,7 +450,11 @@ window.COURTS = [
     },
     "sources": [
       "http://gotennis.kr/seoul/808/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 32,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 → 샛강 (1정거장) 환승 신림선 → 서울지방병무청 (2정거장) + 도보 5분"
+    }
   },
   {
     "id": "gwanak-gumin",
@@ -489,7 +521,11 @@ window.COURTS = [
       "http://gotennis.kr/seoul/751/",
       "https://courtskorea.com/courts/gwanakguminundongjang-tennis-court",
       "https://booking.gwanakgongdan.or.kr/booking/1573"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 43,
+      "route": "6호선 공덕 → 삼각지 (2정거장) 환승 4호선 → 사당 (5정거장) 환승 2호선 → 낙성대 (1정거장) + 도보 14분"
+    }
   },
   {
     "id": "seonu-park",
@@ -544,7 +580,11 @@ window.COURTS = [
       "https://seoul-tennis.com/gwanak-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=736",
       "https://courtskorea.com/courts/seonu-park-tennis-court-bkoteu-weekday-yagan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 55,
+      "route": "5호선 공덕 → 여의도 환승 9호선 → 샛강 환승 신림선 → 신림 (7정거장) + 버스 환승·도보 약 20분"
+    }
   },
   {
     "id": "nanu-park",
@@ -599,7 +639,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S250520182539872577",
       "https://seoul-tennis.com/gwanak-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=729"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 50,
+      "route": "5호선 공덕 → 여의도 환승 9호선 → 샛강 환승 신림선 → 신림 (7정거장) + 버스 환승·도보 약 15분"
+    }
   },
   {
     "id": "worldcup-park",
@@ -658,7 +702,11 @@ window.COURTS = [
       "https://seoul-tennis.com/mapo-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=920",
       "http://gotennis.kr/seoul/896/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 32,
+      "route": "6호선 공덕 → 월드컵경기장 (7정거장) + 도보 15분"
+    }
   },
   {
     "id": "mangwon-hangang",
@@ -714,7 +762,11 @@ window.COURTS = [
       "https://seoul-tennis.com/mapo-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1510",
       "https://courtskorea.com/courts/mangwon-hangang-park-tennis-court-1beon-koteu-jeonyeok"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 29,
+      "route": "6호선 공덕 → 망원 (5정거장) + 도보 약 16분 (또는 마을버스)"
+    }
   },
   {
     "id": "mangwon-nadeulmok",
@@ -768,7 +820,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260911145330317818",
       "https://seoul-tennis.com/mapo-gu",
       "http://gotennis.kr/seoul/8535/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 28,
+      "route": "6호선 공덕 → 망원 (5정거장) + 도보 약 15분 (또는 마을버스)"
+    }
   },
   {
     "id": "nanji-hangang",
@@ -822,7 +878,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260926111431249095",
       "https://seoul-tennis.com/mapo-gu",
       "https://courtskorea.com/courts/nanji-hangang-park-tennis-court-1beon-koteu-jeonyeok"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 35,
+      "route": "6호선 공덕 → 월드컵경기장 (7정거장) + 도보 약 18분 (또는 버스 환승)"
+    }
   },
   {
     "id": "ichon-hangang",
@@ -878,7 +938,11 @@ window.COURTS = [
       "https://seoul-tennis.com/yongsan-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1127",
       "https://courtskorea.com/courts/ichon-hangang-park-tennis-court-5beon-koteu-jeonyeok"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 27,
+      "route": "경의중앙선 공덕 → 서빙고 (4정거장, 배차 간격 김) + 도보 9분"
+    }
   },
   {
     "id": "hannam-tennis",
@@ -935,7 +999,11 @@ window.COURTS = [
       "https://seoul-tennis.com/yongsan-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1120",
       "https://courtskorea.com/courts/hannam-tennis-court-1beonkoteu-weekday-jugan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 23,
+      "route": "6호선 공덕 → 버티고개 (6정거장) + 도보 8분"
+    }
   },
   {
     "id": "yongsan-park-garden",
@@ -998,7 +1066,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/yongsan-gu",
       "https://yongsanparkstory.kr/program/reservation.html"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 20,
+      "route": "6호선 공덕 → 삼각지 (2정거장) + 도보 약 12분 (정원 입장 절차 필요)"
+    }
   },
   {
     "id": "second-rally-yongsan",
@@ -1056,7 +1128,11 @@ window.COURTS = [
     "sources": [
       "http://secondrally.co.kr/",
       "https://blog.naver.com/inggochucheon/223918565210"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 16,
+      "route": "경의중앙선 공덕 → 용산 (2정거장) + 도보 5분 (또는 6호선 삼각지 환승 4호선 신용산)"
+    }
   },
   {
     "id": "jangchung",
@@ -1118,7 +1194,11 @@ window.COURTS = [
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1156",
       "http://gotennis.kr/seoul/536/",
       "https://courtskorea.com/courts/jangchung-tennis-court-2beonkoteu-weekday-yagan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 32,
+      "route": "6호선 공덕 → 약수 (7정거장) 환승 3호선 → 동대입구 (1정거장) + 도보 10분"
+    }
   },
   {
     "id": "songijeong",
@@ -1182,7 +1262,11 @@ window.COURTS = [
       "https://www.e-junggu.or.kr/fmcs/220",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1165",
       "https://courtskorea.com/courts/songijeongmunhwacheyuk-center-tennis-court"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 17,
+      "route": "5호선 공덕 → 애오개 (1정거장) + 도보 12분"
+    }
   },
   {
     "id": "samcheong",
@@ -1247,7 +1331,11 @@ window.COURTS = [
       "https://seoul-tennis.com/jongno-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1200",
       "https://courtskorea.com/courts/samcheong-tennis-court-koteuiyong-yagan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 26,
+      "route": "5호선 공덕 → 광화문 (4정거장) + 종로11 마을버스 종점 (약 15분)"
+    }
   },
   {
     "id": "gajwa",
@@ -1307,7 +1395,11 @@ window.COURTS = [
       "https://seoul-tennis.com/seodaemun-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=926",
       "https://courtskorea.com/courts/gajwa-tennis-court-weekday-yagan-bkoteu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 35,
+      "route": "공항철도 공덕 → 홍대입구 (1정거장) + 버스 환승·도보 약 25분"
+    }
   },
   {
     "id": "hongeun",
@@ -1361,7 +1453,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S261009145219767871",
       "https://seoul-tennis.com/seodaemun-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1046"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 36,
+      "route": "5호선 공덕 → 서대문 (3정거장) + 버스 환승(통일로) 홍은동 + 도보 약 10분"
+    }
   },
   {
     "id": "hyeonjeo",
@@ -1415,7 +1511,11 @@ window.COURTS = [
       "https://seoul-tennis.com/seodaemun-gu",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1044",
       "https://courtskorea.com/courts/hyeonjeo-tennis-court-weekend-mit-holiday-jugan"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 27,
+      "route": "5호선 공덕 → 서대문 (3정거장) + 버스/도보 약 18분 (3호선 독립문역 인근)"
+    }
   },
   {
     "id": "jangmi-eunpyeong",
@@ -1470,7 +1570,11 @@ window.COURTS = [
       "https://www.efmc.or.kr/fmcs/442",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1151",
       "http://gotennis.kr/seoul/8473/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 44,
+      "route": "6호선 공덕 → 불광 (13정거장) + 버스/도보 약 15분"
+    }
   },
   {
     "id": "seonjeong-eunpyeong",
@@ -1523,7 +1627,11 @@ window.COURTS = [
       "https://seoul-tennis.com/eunpyeong-gu",
       "https://www.efmc.or.kr/fmcs/762",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1752"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 50,
+      "route": "6호선 공덕 → 구산 (16정거장) + 도보 15분"
+    }
   },
   {
     "id": "eunpyeong-gumin",
@@ -1574,7 +1682,11 @@ window.COURTS = [
       "https://seoul-tennis.com/eunpyeong-gu",
       "https://www.efmc.or.kr/fmcs/31",
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=1142"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 52,
+      "route": "6호선 공덕 → 연신내 (15정거장) 환승 3호선 → 구파발 (2정거장) + 도보 10분"
+    }
   },
   {
     "id": "kitu-clean-tennis-gocheok",
@@ -1642,7 +1754,11 @@ window.COURTS = [
       "https://kitutennis.co.kr/",
       "https://checkmate-life.com/entry/%EC%84%9C%EC%9A%B8%EC%8B%A4%EB%82%B4%ED%85%8C%EB%8B%88%EC%8A%A4-%EA%B7%80%EB%9A%9C%EB%9D%BC%EB%AF%B8-%EA%B5%AC%EA%B4%80-%EC%BD%94%ED%8A%B8-%EC%9D%B4%EC%9A%A9%ED%9B%84%EA%B8%B0-%EB%B0%8F-%EC%9D%B4%EC%9A%A9%EB%A3%8C",
       "https://smaxh.com/ko-KR/courts/73905b9e-0ebd-456b-b62e-28f9677d1065"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 26,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 구일 (4정거장), 2번 출구 바로 앞"
+    }
   },
   {
     "id": "jd-tennis-club-yeomchang",
@@ -1699,7 +1815,11 @@ window.COURTS = [
       "https://www.jdtennisclub.com/",
       "https://smaxh.com/ko-KR/courts/effedc8b-6b95-4040-90db-bd3f20ea6d27",
       "https://www.sankun.com/site-info/4OEFpD2gNzNK7hA2uIKPRuDchrZ33QwxzCDZ7xii1HI"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 22,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 급행 → 염창 (2정거장) + 도보 약 5분"
+    }
   },
   {
     "id": "kbs-sportsworld-indoor",
@@ -1756,7 +1876,11 @@ window.COURTS = [
       "https://smaxh.com/ko-KR/courts/989a9282-5988-4e87-9f44-8920e3fd4d2e",
       "http://www.tennispeople.kr/news/articleView.html?idxno=14786",
       "https://pf.kakao.com/_xlxmfwG"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 32,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 급행 → 가양 (3정거장) + 도보 약 13분 (또는 버스 환승)"
+    }
   },
   {
     "id": "vtg-yeouido-indoor",
@@ -1805,7 +1929,11 @@ window.COURTS = [
       "https://www.facebook.com/VTGTennis/",
       "https://vymaps.com/KR/VTG-325035341507416/",
       "https://smaxh.com/ko-KR/courts/ecf68db8-2a50-43c9-bc38-1aaf5909b61e"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 11,
+      "route": "5호선 공덕 → 여의도 (3정거장), 5번 출구 앞"
+    }
   },
   {
     "id": "cut-tennis-hongdae",
@@ -1857,7 +1985,11 @@ window.COURTS = [
       "https://smaxh.com/ko-KR/courts/d52f7499-8a58-496e-845e-bd47b71adcc8",
       "https://www.threads.com/@cuttennis_official/post/DBnzD4mvbFS",
       "https://opencourt.kr/courts/%EC%BB%B7%ED%85%8C%EB%8B%88%EC%8A%A4-%ED%99%8D%EB%8C%80%EC%A0%90"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 11,
+      "route": "6호선 공덕 → 상수 (3정거장) + 도보 약 2분"
+    }
   },
   {
     "id": "seoul-tech-hs-daebang",
@@ -1905,7 +2037,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/cb2a4b23-b10b-4dc9-af8a-e320b7269faa"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 33,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 대방 (1정거장) + 도보 약 15분 (또는 신림선 서울지방병무청역 도보 약 7분)"
+    }
   },
   {
     "id": "jungang-girls-hs-ahyeon",
@@ -1953,7 +2089,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/8088e3af-2940-4fe0-915e-0a4d118091c7"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 22,
+      "route": "5호선 공덕 → 충정로 (2정거장) 환승 2호선 → 아현 (1정거장) + 도보 약 9분"
+    }
   },
   {
     "id": "kolon-sporex-seocho",
@@ -2002,7 +2142,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/c669425c-0ab2-4978-87ad-0310dc9e2406"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 37,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 고속터미널 (3정거장) 환승 3호선 → 교대 (1정거장) + 도보 약 11분"
+    }
   },
   {
     "id": "sangam-sanjang-deogeun",
@@ -2050,7 +2194,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/865ff9f6-f355-4325-9da0-c808a613b6c0"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 30,
+      "route": "공항철도 공덕 → 디지털미디어시티 (2정거장) + 버스로 덕은동 이동 후 도보 (추정)"
+    }
   },
   {
     "id": "air-court-kau-hwajeon",
@@ -2099,7 +2247,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/86a5342d-bc5e-432b-9b25-c1278b6e6956"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 28,
+      "route": "경의중앙선 공덕 → 화전 (6정거장, 배차 간격 김) → 역 바로 앞"
+    }
   },
   {
     "id": "tennisbeat-gangseo-gaehwa",
@@ -2147,7 +2299,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/663921bd-11a6-4f9f-a4c5-b3bce5052a4e"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 45,
+      "route": "공항철도 공덕 → 김포공항 (4정거장) 환승 9호선 → 개화 (1정거장) + 버스/도보 약 20분 (추정)"
+    }
   },
   {
     "id": "song-tennis-camp-daeya",
@@ -2195,7 +2351,11 @@ window.COURTS = [
     },
     "sources": [
       "https://smaxh.com/ko-KR/courts/184addb9-8309-4e85-b3a2-fd040536111b"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 43,
+      "route": "공항철도 공덕 → 김포공항 (4정거장) 환승 서해선 → 시흥대야 (5정거장) + 도보 약 7분 (추정)"
+    }
   },
   {
     "id": "jamwon-hangang-tennis",
@@ -2249,7 +2409,11 @@ window.COURTS = [
       "https://seoul-tennis.com/seocho-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260929082319244681",
       "https://hangang.seoul.go.kr/www/contents/777.do?mid=516"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 39,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 고속터미널 (3정거장) 환승 3호선 → 잠원 (1정거장) + 도보 약 13분"
+    }
   },
   {
     "id": "banpo-sports-complex-tennis",
@@ -2307,7 +2471,11 @@ window.COURTS = [
       "https://seoul-tennis.com/seocho-gu",
       "https://www.seocho.go.kr/sports/fmcs/146",
       "https://www.ktriptips.com/kor/leisure/2733973"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 33,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선(일반) → 신반포 (7정거장) + 도보 약 5분"
+    }
   },
   {
     "id": "yangjae-citizens-forest-tennis",
@@ -2370,7 +2538,11 @@ window.COURTS = [
       "https://seoul-tennis.com/seocho-gu",
       "https://www.seocho.go.kr/sports/fmcs/60",
       "https://mediahub.seoul.go.kr/archives/2007458"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 40,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 신논현 (4정거장) 환승 신분당선 → 양재시민의숲 (3정거장) + 도보 약 8분"
+    }
   },
   {
     "id": "bongeun-tennis",
@@ -2420,7 +2592,11 @@ window.COURTS = [
       "https://seoul-tennis.com/gangnam-gu",
       "https://life.gangnam.go.kr/fmcs/54",
       "https://info.koreacharts.com/facility/106044/contents.html"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 34,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 급행 → 봉은사 (6정거장) + 도보 약 6분"
+    }
   },
   {
     "id": "daechi-yusuji-tennis",
@@ -2481,7 +2657,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/gangnam-gu",
       "http://www.xn--vk1b79znxd34c61h.kr"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 42,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 종합운동장 (7정거장) + 도보 약 17분"
+    }
   },
   {
     "id": "maru-park-tennis",
@@ -2536,7 +2716,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/gangnam-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S210205141719898815"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 47,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 고속터미널 환승 3호선 → 대청 (8정거장) + 도보 약 7분"
+    }
   },
   {
     "id": "dongbu-road-office-tennis",
@@ -2586,7 +2770,11 @@ window.COURTS = [
       "https://seoul-tennis.com/gangnam-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S261008132145262455",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S261008132006245619"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 44,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 고속터미널 환승 3호선 → 학여울 (7정거장) + 도보 약 6분"
+    }
   },
   {
     "id": "seoul-forest-tennis",
@@ -2640,7 +2828,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/seongdong-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S251203104822013240"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 37,
+      "route": "경의중앙선 공덕 → 왕십리 (8정거장) 환승 수인분당선 → 서울숲 (1정거장) + 도보 약 8분"
+    }
   },
   {
     "id": "eungbong-park-daehyeonsan-tennis",
@@ -2693,7 +2885,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/seongdong-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S251121100349891778"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 29,
+      "route": "5호선 공덕 → 신금호 (9정거장) + 도보 약 8분 (오르막)"
+    }
   },
   {
     "id": "eungbong-sports-park-tennis",
@@ -2752,7 +2948,11 @@ window.COURTS = [
       "https://sports.happysd.or.kr/fmcs/168",
       "https://sports.happysd.or.kr/fmcs/181",
       "https://www.ktriptips.com/kor/tourspot/2757822"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 26,
+      "route": "경의중앙선 공덕 → 응봉 (7정거장, 배차 간격 김) + 도보 약 5분"
+    }
   },
   {
     "id": "majang-tennis",
@@ -2803,7 +3003,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/seongdong-gu",
       "https://sports.happysd.or.kr/fmcs/192"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 34,
+      "route": "5호선 공덕 → 마장 (12정거장) + 도보 약 7분"
+    }
   },
   {
     "id": "ttukseom-hangang-tennis",
@@ -2858,7 +3062,11 @@ window.COURTS = [
       "https://seoul-tennis.com/gwangjin-gu",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260929074034595016",
       "https://hangang.seoul.go.kr/www/contents/777.do?mid=516"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 46,
+      "route": "5호선 공덕 → 여의도 환승 9호선 급행 → 고속터미널 환승 7호선 → 자양(뚝섬한강공원) (6정거장) + 도보 약 10분"
+    }
   },
   {
     "id": "childrens-grand-park-tennis",
@@ -2924,7 +3132,11 @@ window.COURTS = [
     "sources": [
       "https://seoul-tennis.com/gwangjin-gu",
       "https://sisul.or.kr/open_content/childrenpark/guidance/facility/rent_tennis.jsp"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 48,
+      "route": "5호선 공덕 → 군자 (15정거장) 환승 7호선 → 어린이대공원 (1정거장) + 도보 약 8분"
+    }
   },
   {
     "id": "bucheon-stadium-tennis",
@@ -2987,7 +3199,11 @@ window.COURTS = [
     "sources": [
       "https://reserv.bucheon.go.kr/site/main/lending/lendingDetail?lending_info_seq=115&inst_cate=01",
       "https://reserv.bucheon.go.kr/site/main/lending/lendingList?lending_inst_nm=tennis&inst_cate=01"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 36,
+      "route": "공항철도 공덕 → 김포공항 (4정거장) 환승 서해선 → 부천종합운동장 (2정거장) + 도보 약 5분"
+    }
   },
   {
     "id": "bucheon-gymnasium-tennis-hard",
@@ -3049,7 +3265,11 @@ window.COURTS = [
     },
     "sources": [
       "https://reserv.bucheon.go.kr/site/main/lending/lendingDetail?lending_info_seq=192&inst_cate=01"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 52,
+      "route": "공항철도 공덕 → 김포공항 환승 서해선 → 부천종합운동장 환승 7호선 → 부천시청 (3정거장) + 도보 약 12분"
+    }
   },
   {
     "id": "bucheon-indoor-tennis",
@@ -3107,7 +3327,11 @@ window.COURTS = [
     },
     "sources": [
       "https://reserv.bucheon.go.kr/site/main/lending/lendingDetail?lending_info_seq=195&inst_cate=01"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 52,
+      "route": "공항철도 공덕 → 김포공항 환승 서해선 → 부천종합운동장 환승 7호선 → 부천시청 (3정거장) + 도보 약 12분"
+    }
   },
   {
     "id": "sindorim-tennis",
@@ -3168,7 +3392,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260917102150011798",
       "https://seoul-tennis.com/guro-gu",
       "https://www.guro.go.kr/sports/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 32,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 신도림 (2정거장) + 도보 약 12분"
+    }
   },
   {
     "id": "gyenam-park-tennis",
@@ -3227,7 +3455,11 @@ window.COURTS = [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260910123024197077",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S260910125532237003",
       "https://seoul-tennis.com/guro-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 43,
+      "route": "5호선 공덕 → 영등포구청 환승 2호선 → 신도림 (2정거장) → 신정지선 환승 양천구청 (2정거장) + 도보 약 10분"
+    }
   },
   {
     "id": "gocheok-park-tennis",
@@ -3278,7 +3510,11 @@ window.COURTS = [
       "https://sports.seoul.go.kr/main/facilities/facilities_view.do?ft_idx=834",
       "https://sportsclub.sports.or.kr/club/seoul-guro/notice-view?bbsIntgSqn=12571&bbsStgSqn=539",
       "https://www.guro-gurosportsclub.or.kr/fmcs/3"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 51,
+      "route": "5호선 공덕 → 영등포구청 환승 2호선 → 신도림 (2정거장) → 신정지선 환승 양천구청 (2정거장) + 도보 약 18분"
+    }
   },
   {
     "id": "seoul-energy-mokdong-tennis",
@@ -3330,7 +3566,11 @@ window.COURTS = [
     "sources": [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S230428115408736358",
       "https://seoul-tennis.com/yangcheon-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 35,
+      "route": "5호선 공덕 → 양평 (7정거장) + 도보 약 18분 (또는 버스 '목동YMCA.서울에너지공사' 하차)"
+    }
   },
   {
     "id": "anyangcheon-ogeumgyo-tennis",
@@ -3382,7 +3622,11 @@ window.COURTS = [
     "sources": [
       "https://www.yangcheon.go.kr/reservation/reservation/ex/reservationCal/View.do?riIdx=RI001407",
       "https://seoul-tennis.com/yangcheon-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 41,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 신도림 (2정거장) 환승 신정지선 → 도림천 (1정거장) + 도보 약 13분"
+    }
   },
   {
     "id": "doksan-tennis",
@@ -3442,7 +3686,11 @@ window.COURTS = [
     "sources": [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S250608153823623749",
       "https://seoul-tennis.com/geumcheon-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 42,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 독산 (5정거장) + 버스/도보 약 15분"
+    }
   },
   {
     "id": "gasan2-retention-park-tennis",
@@ -3494,7 +3742,11 @@ window.COURTS = [
       "https://www.geumcheon.go.kr/reserve/webErntView.do?key=115&searchErntNo=140305",
       "https://www.geumcheon.go.kr/portal/contents.do?key=4019",
       "https://seoul-tennis.com/geumcheon-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 33,
+      "route": "5호선 공덕 → 신길 (4정거장) 환승 1호선 → 가산디지털단지 (4정거장) + 도보 약 9분"
+    }
   },
   {
     "id": "seonam-water-center-tennis",
@@ -3554,7 +3806,11 @@ window.COURTS = [
     "sources": [
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S210219091826906010",
       "https://seoul-tennis.com/gangseo-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 30,
+      "route": "공항철도 공덕 → 마곡나루 (3정거장) + 버스 또는 도보 약 15분 (서남물재생센터 정류장)"
+    }
   },
   {
     "id": "ujangsan-tennis",
@@ -3618,7 +3874,11 @@ window.COURTS = [
       "https://sports.gangseo.seoul.kr/fmcs/18",
       "https://sports.gangseo.seoul.kr/fmcs/64",
       "https://seoul-tennis.com/gangseo-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 41,
+      "route": "5호선 공덕 → 우장산 (13정거장) + 도보 약 12분"
+    }
   },
   {
     "id": "gangseo-banghwa-tennis",
@@ -3677,7 +3937,11 @@ window.COURTS = [
       "https://sports.gangseo.seoul.kr/fmcs/64",
       "https://sports.gangseo.seoul.kr/fmcs/30",
       "https://yeyak.seoul.go.kr/web/reservation/selectReservView.do?rsv_svc_id=S230208201518310274"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 42,
+      "route": "공항철도 공덕 → 김포공항 (4정거장) 환승 5호선 → 방화 (2정거장) + 도보 약 15분"
+    }
   },
   {
     "id": "hwanggeumnae-tennis",
@@ -3730,7 +3994,11 @@ window.COURTS = [
       "https://sports.gangseo.seoul.kr/fmcs/83",
       "https://sports.gangseo.seoul.kr/fmcs/64",
       "https://seoul-tennis.com/gangseo-gu"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 34,
+      "route": "5호선 공덕 → 여의도 (3정거장) 환승 9호선 급행 → 가양 (3정거장) + 도보 약 15분"
+    }
   },
   {
     "id": "jy-tennis-daerim",
@@ -3784,7 +4052,11 @@ window.COURTS = [
     },
     "sources": [
       "https://www.daangn.com/kr/local-profile/jy%ED%85%8C%EB%8B%88%EC%8A%A4-xab1cm37vuxg/"
-    ]
+    ],
+    "transit_gongdeok": {
+      "min": 31,
+      "route": "5호선 공덕 → 영등포구청 (6정거장) 환승 2호선 → 대림 (3정거장) + 도보 약 5분 (위치 확인 필요)"
+    }
   },
   {
     "id": "tennis-lounge-gwangheungchang",
