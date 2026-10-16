@@ -122,6 +122,7 @@ def collect(cfg):
             errors.update(err)
     for cid, err in errors.items():
         logging.warning("%s 조회 실패: %s", cid, err)
+        print(f"조회 실패 {cid}: {err[:100]}")  # 실행 기록(공개)에 남는 건 코트 id와 오류 종류뿐
     return found, errors
 
 
