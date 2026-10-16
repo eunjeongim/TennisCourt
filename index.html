@@ -1252,7 +1252,10 @@ const HOURS = Array.from({ length: 19 }, (_, i) => `${String(i + 6).padStart(2, 
 });
 
 const ALL_HOURS = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
-["set-quiet-from", "set-quiet-to", "set-summary-time"].forEach(id => { $(id).innerHTML = ALL_HOURS.map(h => `<option>${h}</option>`).join(""); });
+["set-quiet-from", "set-quiet-to"].forEach(id => { $(id).innerHTML = ALL_HOURS.map(h => `<option>${h}</option>`).join(""); });
+// 하루 요약은 30분 단위 (감시가 도는 07:00~22:30 사이)
+const HALF_HOURS = Array.from({ length: 32 }, (_, i) => `${String(7 + Math.floor(i / 2)).padStart(2, "0")}:${i % 2 ? "30" : "00"}`);
+$("set-summary-time").innerHTML = HALF_HOURS.map(h => `<option>${h}</option>`).join("");
 $("set-rain-th").innerHTML = [30, 40, 50, 60, 70, 80].map(n => `<option value="${n}">${n}%</option>`).join("");
 function loadAlertSettings() {
   if (location.protocol === "file:") return Promise.resolve();
