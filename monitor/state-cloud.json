@@ -1,6 +1,8 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-10-23|18:00|코트-01"
+  ],
   "jangmi-eunpyeong": [
    "jangmi-eunpyeong|2026-10-19|18:00|2면",
    "jangmi-eunpyeong|2026-10-19|22:00|1면",
@@ -28,7 +30,6 @@
    "jangmi-eunpyeong|2026-10-30|22:00|1면"
   ],
   "seonjeong-eunpyeong": [
-   "seonjeong-eunpyeong|2026-10-16|18:00|3면",
    "seonjeong-eunpyeong|2026-10-17|21:00|2면",
    "seonjeong-eunpyeong|2026-10-18|12:00|2면",
    "seonjeong-eunpyeong|2026-10-18|21:00|3면",
@@ -58,17 +59,14 @@
    "seonjeong-eunpyeong|2026-10-28|19:00|1면",
    "seonjeong-eunpyeong|2026-10-28|19:00|3면",
    "seonjeong-eunpyeong|2026-10-29|18:00|2면",
-   "seonjeong-eunpyeong|2026-10-30|18:00|2면",
-   "seonjeong-eunpyeong|2026-10-30|19:00|2면"
+   "seonjeong-eunpyeong|2026-10-30|18:00|2면"
   ],
   "eunpyeong-gumin": [],
   "eungbong-sports-park-tennis": [],
   "majang-tennis": [],
   "gwanak-gumin": [],
   "gocheok-park-tennis": [
-   "gocheok-park-tennis|2026-10-17|12:00|1면",
-   "gocheok-park-tennis|2026-10-20|18:00|2면",
-   "gocheok-park-tennis|2026-10-30|20:00|3면"
+   "gocheok-park-tennis|2026-10-20|18:00|2면"
   ],
   "bongeun-tennis": [],
   "jd-tennis-club-yeomchang": []
