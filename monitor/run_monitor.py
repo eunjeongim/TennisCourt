@@ -69,7 +69,27 @@ DEFAULT_SETTINGS = {
     "open_reminder": {"on": True, "minutes": 10},  # 즐겨찾기 코트 예약 오픈 N분 전 알림
     "daily_summary": {"on": True, "time": "08:00"},
     "public_status": True,             # 서울시 공공서비스예약 '접수중' 전환 알림 (인증키 필요)
+    # 출발지에서 대중교통 N분 이내 코트만 빈자리 알림 (origin: any=영등포구청·공덕 중 가까운 쪽, ydp, gd)
+    "reach": {"on": True, "max_minutes": 30, "origin": "any"},
 }
+
+
+def court_minutes(court, origin):
+    ydp = court["transit"]["min"]
+    gd = (court.get("transit_gongdeok") or {}).get("min")
+    if origin == "ydp":
+        return ydp
+    if origin == "gd":
+        return gd
+    return min(m for m in (ydp, gd) if m is not None)
+
+
+def within_reach(settings, court):
+    r = settings["reach"]
+    if not r["on"]:
+        return True
+    m = court_minutes(court, r["origin"])
+    return m is not None and m <= r["max_minutes"]
 PAGE_URL = "https://eunjeongim.github.io/TennisCourt/"
 
 
@@ -236,6 +256,8 @@ def main(dry_run=False):
     new_by_court, outbox = {}, []
     for cid, slots in found.items():
         slots = [x for x in slots if wanted(settings, cid, x[0], x[1])]
+        if cid in courts and not within_reach(settings, courts[cid]):
+            slots = []  # 출발지에서 먼 코트는 빈자리 알림 제외
         if min_minutes:
             slots = features.merge_runs(slots, min_minutes)
         if rain and cid in courts:  # 비 올 확률이 높은 실외 자리는 알림에서 뺀다
