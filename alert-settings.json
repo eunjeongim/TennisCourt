@@ -31,7 +31,8 @@
     "bucheon-indoor-tennis": true
   },
   "favorites": [
-    "mokdong"
+    "mokdong",
+    "anyangcheon"
   ],
   "favorites_only": false,
   "min_hours": 2,
