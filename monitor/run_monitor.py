@@ -18,10 +18,11 @@ import sys
 import traceback
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import extra_sources
+import features
 import kakao
 import mokdong
 import publish
@@ -57,7 +58,17 @@ DEFAULT_SETTINGS = {
     "weekday": {"on": True, "from": "18:00", "to": "23:00"},
     "weekend": {"on": True, "from": "06:00", "to": "23:00"},
     "courts": {},
+    "favorites": ["mokdong"],          # 웹페이지 ★ (기기 간 동기화)
+    "favorites_only": False,           # 즐겨찾기 코트만 알림
+    "min_hours": 1,                    # 2면 같은 면 2시간 이상 연속일 때만 알림
+    "rain": {"skip": True, "threshold": 60},       # 실외 코트 강수확률 이상이면 알림 제외
+    "digest": True,                    # 여러 코트의 새 빈자리를 한 통으로 묶기
+    "quiet": {"on": False, "from": "09:00", "to": "18:00", "weekdays_only": True},  # 이 시간엔 보내지 않고 나중에 보냄
+    "open_reminder": {"on": True, "minutes": 10},  # 즐겨찾기 코트 예약 오픈 N분 전 알림
+    "daily_summary": {"on": True, "time": "08:00"},
+    "public_status": True,             # 서울시 공공서비스예약 '접수중' 전환 알림 (인증키 필요)
 }
+PAGE_URL = "https://eunjeongim.github.io/TennisCourt/"
 
 
 def load_json(path, default):
@@ -70,12 +81,23 @@ def load_json(path, default):
 def load_settings():
     s = load_json(SETTINGS, {})
     merged = {**DEFAULT_SETTINGS, **s}
-    for k in ("weekday", "weekend"):
-        merged[k] = {**DEFAULT_SETTINGS[k], **s.get(k, {})}
+    for k, v in DEFAULT_SETTINGS.items():
+        if isinstance(v, dict) and k != "courts":
+            merged[k] = {**v, **s.get(k, {})}
     return merged
 
 
+def in_quiet(settings, now):
+    q = settings["quiet"]
+    if not q["on"] or (q.get("weekdays_only") and now.weekday() >= 5):
+        return False
+    t = now.strftime("%H:%M")
+    return q["from"] <= t < q["to"] if q["from"] < q["to"] else (t >= q["from"] or t < q["to"])
+
+
 def court_alert_on(settings, cid):
+    if settings.get("favorites_only"):
+        return cid in settings.get("favorites", [])
     return settings["courts"].get(cid, cid not in DEFAULT_OFF)
 
 
@@ -168,6 +190,24 @@ def build_message(cid, slots):
     return "\n".join([head, *body, tail]), url
 
 
+def build_digest(new_by_court):
+    """여러 코트의 새 빈자리를 한 통으로: 코트별 한 줄 + 웹페이지 링크"""
+    lines = []
+    for cid, slots in sorted(new_by_court.items(), key=lambda kv: kv[1][0][0]):
+        d, s, e, _ = min(slots)
+        lines.append(f"{COURT_INFO[cid][0]} {len(slots)}건 · {d.month}/{d.day}({WEEKDAY[d.weekday()]}) {s}~")
+    head = f"🎾 새 빈자리 {len(new_by_court)}곳"
+    tail = f"👉 {PAGE_URL}"
+    budget = kakao.TEXT_LIMIT - len(head) - len(tail) - 12
+    body = []
+    for line in lines:
+        if sum(len(x) + 1 for x in body) + len(line) + 1 > budget:
+            body.append(f"외 {len(lines) - len(body)}곳")
+            break
+        body.append(line)
+    return "\n".join([head, *body, tail]), PAGE_URL
+
+
 def main(dry_run=False):
     cfg = load_json(HERE / "config.json", {})
     now = datetime.now()
@@ -178,26 +218,97 @@ def main(dry_run=False):
     if not dry_run and SCOPE != "cloud":  # 클라우드는 워크플로가 체크아웃·커밋을 맡는다
         publish.sync()  # 웹페이지에서 바꾼 알림 설정 받아오기
     settings = load_settings()
+    courts = features.load_courts()
 
     found, errors = collect(cfg)
-    outbox = []
+
+    rain = {}
+    if settings["rain"]["skip"]:
+        try:
+            rain = features.fetch_rain({cid: courts[cid] for cid in found if cid in courts})
+        except Exception as ex:
+            logging.warning("날씨 조회 실패: %s", ex)
+
+    quiet = in_quiet(settings, now) and "--any-time" not in sys.argv
+    min_minutes = 120 if settings.get("min_hours") == 2 else 0
+    new_by_court, outbox = {}, []
     for cid, slots in found.items():
         slots = [x for x in slots if wanted(settings, cid, x[0], x[1])]
+        if min_minutes:
+            slots = features.merge_runs(slots, min_minutes)
+        if rain and cid in courts:  # 비 올 확률이 높은 실외 자리는 알림에서 뺀다
+            th = settings["rain"]["threshold"]
+            slots = [x for x in slots if features.is_indoor(courts[cid], x[3])
+                     or (features.slot_rain(rain, cid, x[0], x[1], x[2]) or 0) < th]
         keys = {f"{cid}|{d}|{s}|{label}" for d, s, e, label in slots}
         seen = set(state["seen"].get(cid, []))
         new = [x for x in slots if f"{cid}|{x[0]}|{x[1]}|{x[3]}" not in seen]
-        # 지금 보이는 빈자리만 기억 → 누가 예약했다가 다시 풀리면 또 알린다
-        state["seen"][cid] = sorted(k for k in keys if k.split("|")[1] >= today)
-        if new:
+        # 지금 보이는 빈자리만 기억 → 누가 예약했다가 다시 풀리면 또 알린다.
+        # 조용한 시간에는 새 빈자리를 기억하지 않아서, 조용한 시간이 끝난 뒤에도 남아 있으면 그때 알린다.
+        remember = (keys & seen) if quiet else keys
+        state["seen"][cid] = sorted(k for k in remember if k.split("|")[1] >= today)
+        if new and not quiet:
             logging.info("%s: 조건 맞는 빈자리 %d, 새로 생긴 것 %d", cid, len(slots), len(new))
-            outbox.append(build_message(cid, new))
-    logging.info("조회 %d곳, 실패 %d곳, 알림 %d건", len(found), len(errors), len(outbox))
+            new_by_court[cid] = new
+    if new_by_court:
+        if settings["digest"] and len(new_by_court) > 1:
+            outbox.append(build_digest(new_by_court))
+        else:
+            outbox += [build_message(cid, new) for cid, new in new_by_court.items()]
+    alerts_sent = sum(len(v) for v in new_by_court.values())
+    logging.info("조회 %d곳, 실패 %d곳, 새 빈자리 %d건%s", len(found), len(errors), alerts_sent, " (조용한 시간)" if quiet else "")
 
     # 목동 로그인 문제처럼 직접 손봐야 하는 오류만 카톡으로 알린다 (다른 사이트 일시 장애는 기록만)
     error_text = errors.get("mokdong", "")
     if error_text and error_text != state.get("last_error"):
         outbox.append((f"⚠️ 목동 조회 오류\n{error_text}"[:kakao.TEXT_LIMIT], mokdong.RENT_URL))
     state["last_error"] = error_text
+
+    extra = {}
+    if SCOPE == "cloud":
+        # 예약 오픈 미리 알림 (즐겨찾기 코트, 클라우드만 담당해서 중복 없음)
+        if settings["open_reminder"]["on"] and not quiet:
+            reminded = set(state.get("reminded", []))
+            for key, text, url in features.open_reminders(
+                    now, settings.get("favorites", []), settings["open_reminder"]["minutes"], reminded,
+                    {cid: n for cid, (n, _) in COURT_INFO.items()} | {cid: c["name"] for cid, c in courts.items() if cid not in COURT_INFO},
+                    {cid: u for cid, (_, u) in COURT_INFO.items()} | {cid: c["links"].get("reserve", "") for cid, c in courts.items() if cid not in COURT_INFO}):
+                outbox.append((text[:kakao.TEXT_LIMIT], url or PAGE_URL))
+                reminded.add(key)
+            state["reminded"] = sorted(k for k in reminded if k.split("|")[1] >= today)
+
+        # 서울시 공공서비스예약 상태 (인증키가 있을 때만)
+        api_key = os.environ.get("SEOUL_API_KEY", "")
+        if settings["public_status"] and api_key:
+            try:
+                public = features.fetch_public_status(api_key, courts)
+                extra["public"] = public
+                prev = state.get("public", {})
+                watch = set(settings.get("favorites", [])) | {cid for cid in courts if court_alert_on(settings, cid)}
+                for cid, svcs in public.items():
+                    for sv in svcs:
+                        was = prev.get(sv["id"])
+                        if sv["status"] == "접수중" and was and was != "접수중" and cid in watch and not quiet:
+                            outbox.append((f"🟢 {courts[cid]['name']} 공공예약 접수중으로 바뀜\n{sv['name']}"[:kakao.TEXT_LIMIT - 30]
+                                           + f"\n👉 {sv['url']}", sv["url"]))
+                state["public"] = {sv["id"]: sv["status"] for svcs in public.values() for sv in svcs}
+            except Exception as ex:
+                logging.warning("서울시 공공예약 조회 실패: %s", ex)
+
+    # 하루 통계 (요약 알림용): 이 실행 범위의 알림 수·실패 코트
+    stats = state.setdefault("stats", {})
+    st = stats.setdefault(today, {"alerts": 0, "errors": []})
+    st["alerts"] += alerts_sent
+    st["errors"] = sorted(set(st["errors"]) | {COURT_INFO.get(c, (c,))[0] for c in errors})
+    state["stats"] = {d: v for d, v in stats.items() if d >= (date.today() - timedelta(days=3)).isoformat()}
+    extra["stats"] = state["stats"]
+
+    if SCOPE == "cloud" and settings["daily_summary"]["on"] and state.get("summary_sent") != today \
+            and now.strftime("%H:%M") >= settings["daily_summary"]["time"]:
+        pc = load_json(publish.out_path("pc"), {})
+        yesterday = (date.today() - timedelta(days=1)).isoformat()
+        outbox.append((features.summary_text(yesterday, state["stats"], pc.get("stats", {}), pc.get("checked_at")), PAGE_URL))
+        state["summary_sent"] = today
 
     days_left = None
     try:
@@ -215,7 +326,7 @@ def main(dry_run=False):
                 for cid, (name, url) in COURT_INFO.items()
                 if cid in SCOPE_COURTS[SCOPE] and cfg["courts"].get(cid, True)}
         try:
-            publish.publish(found, list(errors), meta, scope=SCOPE, use_git=SCOPE != "cloud")
+            publish.publish(found, list(errors), meta, scope=SCOPE, use_git=SCOPE != "cloud", extra=extra)
         except Exception:
             logging.error(traceback.format_exc())
 
@@ -226,7 +337,7 @@ def main(dry_run=False):
     if not dry_run:
         STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"[{now:%m-%d %H:%M}] 완료: 조회 {len(found)}곳, 실패 {len(errors)}곳, 알림 {len(outbox)}건"
-          + (" (dry-run, 미발송)" if dry_run else ""))
+          + (" (조용한 시간)" if quiet else "") + (" (dry-run, 미발송)" if dry_run else ""))
 
 
 if __name__ == "__main__":

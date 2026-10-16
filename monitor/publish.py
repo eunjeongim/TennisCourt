@@ -37,10 +37,11 @@ def build(found, now, meta=None):
     return {"checked_at": now.isoformat(timespec="minutes"), "meta": meta or {}, "courts": courts}
 
 
-def publish(found, failed_ids=(), meta=None, now=None, scope="pc", use_git=True):
+def publish(found, failed_ids=(), meta=None, now=None, scope="pc", use_git=True, extra=None):
     now = now or datetime.now()
     OUT = out_path(scope)
     data = build(found, now, meta)
+    data.update(extra or {})  # stats(하루 통계), public(서울시 공공예약 상태)
     old = {}
     try:
         old = json.loads(OUT.read_text(encoding="utf-8"))
@@ -51,7 +52,7 @@ def publish(found, failed_ids=(), meta=None, now=None, scope="pc", use_git=True)
         if cid in old.get("courts", {}):
             data["courts"][cid] = old["courts"][cid]
 
-    changed = data["courts"] != old.get("courts") or data["meta"] != old.get("meta")
+    changed = any(data.get(k) != old.get(k) for k in ("courts", "meta", "public"))
     last = datetime.fromisoformat(old["checked_at"]) if old.get("checked_at") else None
     if not changed and last and now - last < timedelta(minutes=HEARTBEAT_MIN):
         return False

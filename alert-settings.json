@@ -30,5 +30,30 @@
     "bucheon-indoor-tennis": true,
     "jd-tennis-club-yeomchang": false
   },
-  "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
+  "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만).",
+  "favorites": [
+    "mokdong"
+  ],
+  "favorites_only": false,
+  "min_hours": 1,
+  "rain": {
+    "skip": true,
+    "threshold": 60
+  },
+  "digest": true,
+  "quiet": {
+    "on": false,
+    "from": "09:00",
+    "to": "18:00",
+    "weekdays_only": true
+  },
+  "open_reminder": {
+    "on": true,
+    "minutes": 10
+  },
+  "daily_summary": {
+    "on": true,
+    "time": "08:00"
+  },
+  "public_status": true
 }

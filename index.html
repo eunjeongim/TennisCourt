@@ -124,6 +124,31 @@
   .vac-time.stale { color: var(--warn); }
   .vac-head .check { margin-left: auto; }
   .vac-warn { font-size: 12.5px; color: var(--warn); margin: 8px 0 0; }
+  .slot small.rain { color: #2b6cb0; font-weight: 700; }
+  .slot.fit small.rain { color: #dbeafe; }
+  #vac-view button { padding: 5px 10px; }
+  .wk-wrap { overflow-x: auto; margin-top: 12px; }
+  table.wk { border-collapse: separate; border-spacing: 3px; font-size: 12px; min-width: 560px; width: 100%; }
+  table.wk th { font-weight: 700; color: var(--muted); text-align: center; padding: 2px; border: 0; width: auto; }
+  table.wk th.we { color: #c0392b; }
+  table.wk td { border: 0; padding: 0; text-align: center; }
+  table.wk td.h { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; padding-right: 4px; width: 38px; }
+  .wk-cell { width: 100%; min-height: 26px; border: 0; border-radius: 6px; cursor: pointer; font: 700 12px "Noto Sans KR", sans-serif;
+    background: var(--surface-2); color: var(--muted); }
+  .wk-cell[data-n="0"] { cursor: default; background: transparent; color: transparent; }
+  .wk-cell.l1 { background: #d6efd4; color: #2f7d32; } .wk-cell.l2 { background: #9fd59b; color: #1f5d22; } .wk-cell.l3 { background: #2f7d32; color: #fff; }
+  .wk-cell.sel { outline: 2px solid var(--text); }
+  .wk-detail { margin-top: 10px; font-size: 13px; }
+  .wk-detail h4 { margin: 0 0 6px; font-size: 14px; }
+  .wk-detail li { margin: 3px 0; }
+  .wk-detail a { color: var(--accent); font-weight: 700; }
+  .pub-list { list-style: none; padding: 0; margin: 4px 0 0; font-size: 13px; }
+  .pub-list li { margin: 4px 0; }
+  .pub-st { display: inline-block; font-size: 11px; font-weight: 700; padding: 0 6px; border-radius: 5px; margin-right: 6px; background: var(--surface-2); color: var(--muted); }
+  .pub-st.on { background: var(--accent-soft); color: var(--accent); }
+  .set-hint { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+  .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 2000;
+    background: var(--text); color: var(--surface); padding: 9px 16px; border-radius: 10px; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.25); max-width: calc(100vw - 32px); }
   .btn-ghost { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 9px; padding: 6px 12px; font: 500 13px "Noto Sans KR", sans-serif; cursor: pointer; }
   .btn-ghost:hover { border-color: var(--accent); background: var(--surface-2); }
   .bell-off { color: var(--muted); }
@@ -393,6 +418,7 @@
     <div class="vac-head">
       <h2>🎾 빈자리 현황</h2>
       <span class="vac-time" id="vac-time"></span>
+      <div class="seg" id="vac-view" aria-label="보기 방식"><button type="button" data-vview="list">목록</button><button type="button" data-vview="week">주간 표</button></div>
       <label class="check"><input type="checkbox" id="vac-mine" checked>내 알림 조건만</label>
       <button type="button" class="btn-ghost" id="alert-open">🔔 알림 설정</button>
     </div>
@@ -441,6 +467,27 @@
         <div class="set-links"><button type="button" id="set-all-on">전체 켜기</button><button type="button" id="set-all-off">전체 끄기</button></div>
         <div class="court-grid" id="set-courts"></div>
       </div>
+      <div class="set-sec">
+        <h3>알림 방식</h3>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-favonly">★ 즐겨찾기 코트만 알림</label></div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-min2">같은 면 2시간 이상 연속일 때만</label></div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-rain">비 예보 시 실외 코트 제외</label>
+          강수확률 <select id="set-rain-th" aria-label="강수확률 기준"></select> 이상</div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-digest">여러 코트 알림은 한 통으로 묶기</label></div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-quiet">조용한 시간</label>
+          <select id="set-quiet-from" aria-label="조용한 시간 시작"></select> 부터 <select id="set-quiet-to" aria-label="조용한 시간 끝"></select> 전까지
+          <label class="check"><input type="checkbox" id="set-quiet-wd">평일만</label></div>
+        <p class="set-hint">조용한 시간에 생긴 빈자리는 끝난 뒤에도 남아 있으면 그때 알려줘요.</p>
+      </div>
+      <div class="set-sec">
+        <h3>그 밖의 알림</h3>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-open">★ 즐겨찾기 코트 예약 오픈 알림</label>
+          <select id="set-open-min" aria-label="몇 분 전"><option>5</option><option>10</option><option>20</option><option>30</option></select> 분 전</div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-summary">하루 요약</label>
+          매일 <select id="set-summary-time" aria-label="요약 시각"></select></div>
+        <div class="set-row"><label class="switch"><input type="checkbox" id="set-public">서울시 공공예약 '접수중' 전환 알림</label></div>
+        <p class="set-hint">오픈 알림: 목동 매일 09:30, 영등포 공단 20·25일, 부천 20일 10:00 등. 공공예약 알림은 서울 열린데이터광장 인증키가 등록돼 있을 때만 동작해요.</p>
+      </div>
       <div class="set-sec token-box">
         <h3>저장 권한 (GitHub 토큰)</h3>
         <input type="password" id="set-token" placeholder="github_pat_로 시작하는 토큰" autocomplete="off">
@@ -457,6 +504,7 @@
       <button type="button" class="btn primary" id="alert-save">저장</button></div>
   </dialog>
 
+  <div class="toast" id="toast" hidden></div>
   <footer>
     <p>요금과 예약 규칙은 2026-10-15에 각 운영처 안내 페이지와 공개 자료를 보고 정리했습니다. 이용 전 공식 사이트에서 다시 확인하세요.</p>
     <p>소요시간은 노선 기준 추정치입니다. 정확한 경로는 각 카드의 길찾기 버튼으로 확인하세요. ‘위치 근사’ 표시가 있는 코트는 지도 핀이 실제 위치와 조금 다를 수 있습니다.</p>
@@ -883,8 +931,15 @@ function panelOverlap(x) {
   return x > free - 30 ? x - free / 2 : 0;
 }
 
+let publicData = {};
+function sidePublicHtml(id) {
+  const svcs = publicData[id];
+  if (!svcs || !svcs.length) return "";
+  return `<div class="side-vac"><p class="label">서울시 공공예약 상태</p><ul class="pub-list">${svcs.slice(0, 8).map(v =>
+    `<li><span class="pub-st${v.status === "접수중" ? " on" : ""}">${esc(v.status)}</span><a href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.name)}</a></li>`).join("")}</ul></div>`;
+}
 function sideVacHtml(id) {
-  if (!vacData || !VAC_COURTS[id]) return "";
+  if (!vacData || !VAC_COURTS[id]) return sidePublicHtml(id);
   const mine = document.getElementById("vac-mine").checked;
   const days = vacDays(id, mine);
   const rows = vacRowsHtml(days.slice(0, 5), id);
@@ -893,7 +948,7 @@ function sideVacHtml(id) {
     <span class="vac-time">${esc(vacTimeText())}</span>
     ${rows || `<p class="vac-empty" style="margin:0">지금 ${mine ? "조건에 맞는 " : ""}빈자리가 없어요.</p>`}
     ${days.length > 5 ? `<p class="vac-note">외 ${days.length - 5}일 더 있어요. 아래 빈자리 현황에서 볼 수 있어요.</p>` : ""}
-  </div>`;
+  </div>` + sidePublicHtml(id);
 }
 
 function openSide(id) {
@@ -925,9 +980,19 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && !sideEl.hi
 // 빈자리 현황: PC 감시 프로그램이 올리는 vacancies.json을 읽어서 보여준다
 // 감시 중인 코트 목록은 vacancies.json의 meta에서 받는다 (감시 프로그램이 코트를 늘리면 자동 반영)
 let VAC_COURTS = {};
-const DEFAULT_ALERT = { enabled: true, weekday: { on: true, from: "18:00", to: "23:00" }, weekend: { on: true, from: "06:00", to: "23:00" }, courts: {} };
+const DEFAULT_ALERT = {
+  enabled: true, weekday: { on: true, from: "18:00", to: "23:00" }, weekend: { on: true, from: "06:00", to: "23:00" }, courts: {},
+  favorites: null, favorites_only: false, min_hours: 1, rain: { skip: true, threshold: 60 }, digest: true,
+  quiet: { on: false, from: "09:00", to: "18:00", weekdays_only: true }, open_reminder: { on: true, minutes: 10 },
+  daily_summary: { on: true, time: "08:00" }, public_status: true
+};
+const normSettings = s => {
+  const out = { ...DEFAULT_ALERT, ...s, courts: s.courts || {} };
+  ["weekday", "weekend", "rain", "quiet", "open_reminder", "daily_summary"].forEach(k => { out[k] = { ...DEFAULT_ALERT[k], ...(s[k] || {}) }; });
+  return out;
+};
 let alertSettings = DEFAULT_ALERT;
-const courtAlertOn = cid => alertSettings.courts[cid] ?? cid !== "jd-tennis-club-yeomchang";
+const courtAlertOn = cid => alertSettings.favorites_only ? favs.has(cid) : (alertSettings.courts[cid] ?? cid !== "jd-tennis-club-yeomchang");
 const DOW = "일월화수목금토";
 const MOKDONG_INDOOR = new Set([4, 5, 6]);
 const VAC_SHOW_DAYS = 4;
@@ -961,15 +1026,62 @@ function vacTimeText() {
 }
 
 // [[날짜, Map(시간대 → {s, labels})], ...] 같은 날짜·시간은 한 칩으로 묶는다 (목동은 코트 번호 표시)
+// 비 예보 (Open-Meteo): {cid: {"YYYY-MM-DDTHH": 강수확률}}
+let rainData = {};
+const isOutdoorSlot = (cid, label) => {
+  const c = COURTS.find(x => x.id === cid);
+  if (!c) return false;
+  if (cid === "mokdong") { const n = parseInt((String(label).match(/\d+/) || [])[0], 10); return !MOKDONG_INDOOR.has(n); }
+  return !c.tags.some(t => t.includes("실내")) && !c.name.includes("실내");
+};
+function slotRain(cid, s) {
+  const hours = rainData[cid];
+  if (!hours) return null;
+  const a = parseInt(s.start, 10), b = parseInt(s.end, 10) || 24;
+  const vals = [];
+  for (let h = a; h < Math.max(b, a + 1); h++) { const v = hours[`${s.date}T${String(h).padStart(2, "0")}`]; if (v != null) vals.push(v); }
+  return vals.length ? Math.max(...vals) : null;
+}
+function loadRain() {
+  const ids = Object.keys(VAC_COURTS).filter(id => isOutdoorSlot(id, "코트-01"));
+  const cs = ids.map(id => COURTS.find(c => c.id === id)).filter(Boolean);
+  if (!cs.length) return;
+  const q = `latitude=${cs.map(c => c.lat.toFixed(4)).join(",")}&longitude=${cs.map(c => c.lng.toFixed(4)).join(",")}`;
+  fetch(`https://api.open-meteo.com/v1/forecast?${q}&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=16`)
+    .then(r => r.json()).then(d => {
+      (Array.isArray(d) ? d : [d]).forEach((x, i) => {
+        rainData[cs[i].id] = Object.fromEntries(x.hourly.time.map((t, j) => [t.slice(0, 13), x.hourly.precipitation_probability[j]]));
+      });
+      renderVacancy();
+    }).catch(() => {});
+}
+// 같은 날·같은 면의 이어진 빈자리를 합쳐 min분 이상만
+function mergeRuns(slots, min) {
+  const toMin = t => parseInt(t, 10) * 60 + parseInt(t.slice(3), 10);
+  const groups = new Map();
+  [...slots].sort((a, b) => (a.date + (a.court || "") + a.start).localeCompare(b.date + (b.court || "") + b.start)).forEach(s => {
+    const k = `${s.date}|${s.court || ""}`;
+    const runs = groups.get(k) || [];
+    const last = runs[runs.length - 1];
+    if (last && last.end === s.start) last.end = s.end; else runs.push({ ...s });
+    groups.set(k, runs);
+  });
+  return [...groups.values()].flat().filter(r => (toMin(r.end) || 1440) - toMin(r.start) >= min);
+}
+
 function vacDays(cid, mine) {
   const now = new Date();
   const today = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10); // 로컬 날짜
   const nowHM = now.toTimeString().slice(0, 5);
   const byDay = new Map();
-  (vacData.courts[cid] || [])
+  let list = (vacData.courts[cid] || [])
     .filter(s => s.date > today || (s.date === today && s.start > nowHM))
-    .filter(s => !mine || (alertSettings.enabled && courtAlertOn(cid) && fitsMe(s)))
-    .forEach(s => {
+    .filter(s => !mine || (alertSettings.enabled && courtAlertOn(cid) && fitsMe(s)));
+  if (mine) {  // 알림과 같은 기준: 연속 2시간, 비 예보 제외
+    if (alertSettings.min_hours === 2) list = mergeRuns(list, 120);
+    if (alertSettings.rain.skip) list = list.filter(s => !isOutdoorSlot(cid, s.court) || (slotRain(cid, s) ?? 0) < alertSettings.rain.threshold);
+  }
+  list.forEach(s => {
       if (!byDay.has(s.date)) byDay.set(s.date, new Map());
       const key = `${s.start}~${s.end}`;
       const m = byDay.get(s.date);
@@ -984,12 +1096,51 @@ function vacRowsHtml(days, cid) {
     <div class="vac-day"><span class="d${isWeekend(d) ? " we" : ""}">${fmtDay(d)}</span>
       <span class="vac-slots">${[...m.entries()].map(([key, { s, labels }]) => {
         const extra = cid === "mokdong" ? courtNums(labels) : (labels.length > 1 ? `${labels.length}면` : "");
-        return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}</span>`;
+        const pr = labels.some(l => isOutdoorSlot(cid, l)) ? slotRain(cid, s) : null;
+        const rainTag = pr != null && pr >= 30 ? `<small class="rain" title="강수확률">☔${pr}%</small>` : "";
+        return `<span class="slot${fitsMe(s) ? " fit" : ""}">${key}${extra ? `<small>${esc(extra)}</small>` : ""}${rainTag}</span>`;
       }).join("")}</span></div>`).join("");
+}
+
+let vacView = "list", wkSel = null;
+try { vacView = localStorage.getItem("tennis-vac-view") || "list"; } catch (e) {}
+// 요일×시간 표: 칸 숫자 = 그 시간에 빈자리가 있는 코트 수, 누르면 아래에 목록
+function weekHtml(shownIds, mine) {
+  const now = new Date();
+  const days = [...Array(7)].map((_, i) => { const d = new Date(now); d.setDate(d.getDate() + i); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); });
+  const cells = {};  // "date|hour" → [{cid, key, extra}]
+  shownIds.forEach(cid => vacDays(cid, mine).forEach(([d, m]) => {
+    if (!days.includes(d)) return;
+    m.forEach(({ s, labels }, key) => {
+      const a = parseInt(s.start, 10), b = parseInt(s.end, 10) || 24;
+      for (let h = a; h < Math.max(b, a + 1); h++) {
+        const list = (cells[`${d}|${h}`] = cells[`${d}|${h}`] || []);
+        if (!list.some(x => x.cid === cid && x.key === key)) list.push({ cid, key, labels });
+      }
+    });
+  }));
+  const hours = [...Array(18)].map((_, i) => i + 6);  // 06~23시
+  const head = days.map(d => `<th class="${isWeekend(d) ? "we" : ""}">${fmtDay(d)}</th>`).join("");
+  const rows = hours.map(h => `<tr><td class="h">${String(h).padStart(2, "0")}시</td>${days.map(d => {
+    const list = cells[`${d}|${h}`] || [], n = new Set(list.map(x => x.cid)).size;
+    const lv = n >= 4 ? 3 : n >= 2 ? 2 : n ? 1 : 0;
+    return `<td><button type="button" class="wk-cell l${lv}${wkSel === `${d}|${h}` ? " sel" : ""}" data-k="${d}|${h}" data-n="${n}">${n || ""}</button></td>`;
+  }).join("")}</tr>`).join("");
+  let detail = "";
+  if (wkSel && cells[wkSel]) {
+    const [d, h] = wkSel.split("|");
+    const byCourt = {};
+    cells[wkSel].forEach(x => { (byCourt[x.cid] = byCourt[x.cid] || []).push(x); });
+    detail = `<div class="wk-detail"><h4>${fmtDay(d)} ${h}시대 빈자리</h4><ul>${Object.entries(byCourt).map(([cid, xs]) =>
+      `<li><a href="#" data-id="${cid}">${esc(VAC_COURTS[cid].name)}</a> ${xs.map(x => esc(x.key) + (cid === "mokdong" ? ` (${courtNums(x.labels)})` : x.labels.length > 1 ? ` (${x.labels.length}면)` : "")).join(", ")}
+       · <a href="${VAC_COURTS[cid].url}" target="_blank" rel="noopener">예약하기</a></li>`).join("")}</ul></div>`;
+  }
+  return `<div class="wk-wrap"><table class="wk"><thead><tr><th></th>${head}</tr></thead><tbody>${rows}</tbody></table></div>${detail}`;
 }
 
 function renderVacancy() {
   if (!vacData) return;
+  document.querySelectorAll("#vac-view button").forEach(b => b.setAttribute("aria-pressed", b.dataset.vview === vacView));
   const mine = document.getElementById("vac-mine").checked;
   const timeEl = document.getElementById("vac-time");
   timeEl.textContent = vacTimeText();
@@ -1014,7 +1165,15 @@ function renderVacancy() {
       ${rows}${more}</div>`;
   }).join("");
 
-  document.getElementById("vac-list").innerHTML = html || (!shownIds.length
+  if (vacView === "week" && shownIds.length) {
+    document.getElementById("vac-list").innerHTML = weekHtml(shownIds, mine);
+    document.querySelectorAll(".wk-cell").forEach(b => b.addEventListener("click", () => {
+      if (b.dataset.n === "0") return;
+      wkSel = wkSel === b.dataset.k ? null : b.dataset.k;
+      renderVacancy();
+    }));
+    document.querySelectorAll(".wk-detail a[data-id]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showOnMap(a.dataset.id); }));
+  } else document.getElementById("vac-list").innerHTML = html || (!shownIds.length
     ? `<p class="vac-empty">위쪽 필터 조건에 맞는 감시 코트가 없어요. 필터를 줄여 보세요.</p>` :
     `<p class="vac-empty">${mine ? (alertSettings.enabled ? "지금 알림 조건에 맞는 빈자리가 없어요." : "알림이 꺼져 있어요. [알림 설정]에서 켤 수 있어요.") : "지금 빈자리가 없어요."}</p>`);
   const failed = Object.entries(VAC_COURTS).filter(([, m]) => m.error).map(([, m]) => m.name);
@@ -1066,12 +1225,14 @@ function loadVacancy() {
     const order = c => (c && c.meta) || {};
     VAC_COURTS = { ...order(cloud), ...order(pc) };
     if (VAC_COURTS.mokdong) VAC_COURTS = { mokdong: VAC_COURTS.mokdong, ...VAC_COURTS };  // 선호 코트를 맨 앞에
+    publicData = (cloud && cloud.public) || {};
     vacData = {
       checked: { cloud: cloud && cloud.checked_at, pc: pc && pc.checked_at },
       courts: { ...((cloud && cloud.courts) || {}), ...((pc && pc.courts) || {}) }
     };
     document.getElementById("vacancy").hidden = false;
     renderVacancy();
+    if (!Object.keys(rainData).length) loadRain();
   });
 }
 document.getElementById("vac-mine").addEventListener("change", e => {
@@ -1088,12 +1249,21 @@ const HOURS = Array.from({ length: 19 }, (_, i) => `${String(i + 6).padStart(2, 
   $(id).innerHTML = HOURS.map(h => `<option value="${h === "24:00" ? "24:00" : h}">${h}</option>`).join("");
 });
 
+const ALL_HOURS = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`);
+["set-quiet-from", "set-quiet-to", "set-summary-time"].forEach(id => { $(id).innerHTML = ALL_HOURS.map(h => `<option>${h}</option>`).join(""); });
+$("set-rain-th").innerHTML = [30, 40, 50, 60, 70, 80].map(n => `<option value="${n}">${n}%</option>`).join("");
 function loadAlertSettings() {
   if (location.protocol === "file:") return Promise.resolve();
   return fetch(`${RAW}${SETTINGS_PATH}?t=${Date.now()}`, { cache: "no-store" })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(s => {
-      alertSettings = { ...DEFAULT_ALERT, ...s, weekday: { ...DEFAULT_ALERT.weekday, ...s.weekday }, weekend: { ...DEFAULT_ALERT.weekend, ...s.weekend }, courts: s.courts || {} };
+      alertSettings = normSettings(s);
+      // 즐겨찾기는 GitHub에 저장된 것을 기준으로 기기 간 맞춘다
+      if (Array.isArray(s.favorites) && JSON.stringify([...favs].sort()) !== JSON.stringify([...s.favorites].sort())) {
+        favs = new Set(s.favorites);
+        try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch (e) {}
+        refreshFavUI();
+      }
       renderVacancy();
     })
     .catch(() => {});
@@ -1106,6 +1276,14 @@ function fillDialog() {
   $("set-we-on").checked = a.weekend.on; $("set-we-from").value = a.weekend.from; $("set-we-to").value = a.weekend.to;
   $("set-courts").innerHTML = Object.entries(VAC_COURTS).map(([cid, m]) =>
     `<label class="check"><input type="checkbox" data-cid="${cid}"${courtAlertOn(cid) ? " checked" : ""}>${esc(m.name)}</label>`).join("");
+  $("set-favonly").checked = a.favorites_only;
+  $("set-min2").checked = a.min_hours === 2;
+  $("set-rain").checked = a.rain.skip; $("set-rain-th").value = String(a.rain.threshold);
+  $("set-digest").checked = a.digest;
+  $("set-quiet").checked = a.quiet.on; $("set-quiet-from").value = a.quiet.from; $("set-quiet-to").value = a.quiet.to; $("set-quiet-wd").checked = a.quiet.weekdays_only;
+  $("set-open").checked = a.open_reminder.on; $("set-open-min").value = String(a.open_reminder.minutes);
+  $("set-summary").checked = a.daily_summary.on; $("set-summary-time").value = a.daily_summary.time;
+  $("set-public").checked = a.public_status;
   try { $("set-token").value = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) {}
   setMsg("");
 }
@@ -1115,12 +1293,34 @@ function readDialog() {
     weekday: { on: $("set-wd-on").checked, from: $("set-wd-from").value, to: $("set-wd-to").value },
     weekend: { on: $("set-we-on").checked, from: $("set-we-from").value, to: $("set-we-to").value },
     courts: Object.fromEntries([...$("set-courts").querySelectorAll("input")].map(i => [i.dataset.cid, i.checked])),
+    favorites: [...favs],
+    favorites_only: $("set-favonly").checked,
+    min_hours: $("set-min2").checked ? 2 : 1,
+    rain: { skip: $("set-rain").checked, threshold: Number($("set-rain-th").value) },
+    digest: $("set-digest").checked,
+    quiet: { on: $("set-quiet").checked, from: $("set-quiet-from").value, to: $("set-quiet-to").value, weekdays_only: $("set-quiet-wd").checked },
+    open_reminder: { on: $("set-open").checked, minutes: Number($("set-open-min").value) },
+    daily_summary: { on: $("set-summary").checked, time: $("set-summary-time").value },
+    public_status: $("set-public").checked,
     _설명: "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
   };
 }
 function setMsg(text, kind = "") { const m = $("set-msg"); m.textContent = text; m.className = `dlg-msg ${kind}`; }
 
 const b64 = str => btoa(unescape(encodeURIComponent(str)));
+async function putSettings(next, token, message) {
+  const api = `https://api.github.com/repos/${REPO}/contents/${SETTINGS_PATH}`;
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
+  const cur = await fetch(`${api}?ref=main&t=${Date.now()}`, { headers, cache: "no-store" });
+  if (cur.status === 401) throw new Error("토큰이 올바르지 않아요.");
+  const sha = cur.ok ? (await cur.json()).sha : undefined;
+  const res = await fetch(api, {
+    method: "PUT", headers,
+    body: JSON.stringify({ message, content: b64(JSON.stringify(next, null, 2) + "\n"), sha, branch: "main" })
+  });
+  if (res.status === 403 || res.status === 404) throw new Error("토큰에 TennisCourt 저장소 Contents 쓰기 권한이 없어요.");
+  if (!res.ok) throw new Error(`저장 실패 (${res.status})`);
+}
 async function saveAlertSettings() {
   const next = readDialog();
   if (next.weekday.from >= next.weekday.to || next.weekend.from >= next.weekend.to) return setMsg("끝 시각은 시작 시각보다 늦어야 해요.", "err");
@@ -1128,19 +1328,9 @@ async function saveAlertSettings() {
   if (!token) return setMsg("저장하려면 GitHub 토큰이 필요해요. 아래 '토큰 만드는 법'을 참고하세요.", "err");
   try { localStorage.setItem(TOKEN_KEY, token); } catch (e) {}
   setMsg("저장 중…");
-  const api = `https://api.github.com/repos/${REPO}/contents/${SETTINGS_PATH}`;
-  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
   try {
-    const cur = await fetch(`${api}?ref=main&t=${Date.now()}`, { headers, cache: "no-store" });
-    if (cur.status === 401) throw new Error("토큰이 올바르지 않아요.");
-    const sha = cur.ok ? (await cur.json()).sha : undefined;
-    const res = await fetch(api, {
-      method: "PUT", headers,
-      body: JSON.stringify({ message: "chore: 알림 설정 변경 (웹페이지)", content: b64(JSON.stringify(next, null, 2) + "\n"), sha, branch: "main" })
-    });
-    if (res.status === 403 || res.status === 404) throw new Error("토큰에 TennisCourt 저장소 Contents 쓰기 권한이 없어요.");
-    if (!res.ok) throw new Error(`저장 실패 (${res.status})`);
-    alertSettings = { ...next };
+    await putSettings(next, token, "chore: 알림 설정 변경 (웹페이지)");
+    alertSettings = normSettings(next);
     renderVacancy();
     setMsg("저장했어요. 다음 조회(10~20분 안)부터 적용돼요.", "ok");
     setTimeout(() => dlg.close(), 1200);
@@ -1160,17 +1350,48 @@ dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });  // 
 loadAlertSettings().then(loadVacancy);
 setInterval(() => { loadAlertSettings(); loadVacancy(); }, 5 * 60 * 1000);
 
-function toggleFav(id) {
-  favs.has(id) ? favs.delete(id) : favs.add(id);
-  try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch (e) {}
-  const c = COURTS.find(x => x.id === id);
-  document.querySelectorAll(`.pin[data-id="${id}"]`).forEach(el => {
-    el.className = pinClass(c) + (el.classList.contains("selected") ? " selected" : "");
+document.querySelectorAll("#vac-view button").forEach(b => b.addEventListener("click", () => {
+  vacView = b.dataset.vview; wkSel = null;
+  try { localStorage.setItem("tennis-vac-view", vacView); } catch (e) {}
+  renderVacancy();
+}));
+
+function toast(text, ms = 3200) {
+  const t = $("toast"); t.textContent = text; t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, ms);
+}
+function refreshFavUI() {
+  document.querySelectorAll(".pin[data-id]").forEach(el => {
+    const c = COURTS.find(x => x.id === el.dataset.id);
+    if (c) el.className = pinClass(c) + (el.classList.contains("selected") ? " selected" : "");
   });
   mapApi.select(sideId);
   renderList();
   applyFilters();
-  if (sideId) document.getElementById("side-body").querySelectorAll(".fav-btn").forEach(b => { b.outerHTML = favBtn(COURTS.find(x => x.id === b.dataset.fav)); });
+  if (sideId) document.getElementById("side-body").querySelectorAll(".fav-btn").forEach(b => { b.outerHTML = favBtn(b.dataset.fav); });
+}
+// 즐겨찾기를 바꾸면 (토큰이 있을 때) GitHub 설정에도 저장해서 다른 기기·알림과 맞춘다
+let favSyncTimer = null;
+function syncFavorites() {
+  let token = "";
+  try { token = localStorage.getItem(TOKEN_KEY) || ""; } catch (e) {}
+  if (!token) {
+    if (!syncFavorites.warned) toast("즐겨찾기는 이 기기에만 저장돼요. 🔔 알림 설정에 GitHub 토큰을 넣으면 다른 기기·알림과 맞춰져요.", 5000);
+    syncFavorites.warned = true;
+    return;
+  }
+  clearTimeout(favSyncTimer);
+  favSyncTimer = setTimeout(async () => {
+    const next = { ...alertSettings, favorites: [...favs] };
+    try { await putSettings(next, token, "chore: 즐겨찾기 변경 (웹페이지)"); alertSettings = normSettings(next); toast("즐겨찾기를 저장했어요 (다른 기기·알림에도 반영)"); }
+    catch (err) { toast(`즐겨찾기 동기화 실패: ${err.message}`, 5000); }
+  }, 1200);
+}
+function toggleFav(id) {
+  favs.has(id) ? favs.delete(id) : favs.add(id);
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch (e) {}
+  refreshFavUI();
+  syncFavorites();
 }
 // 표 행 클릭(지도로 이동)보다 먼저 잡아서 별 버튼만 동작하게 한다
 document.addEventListener("click", e => {
