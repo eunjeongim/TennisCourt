@@ -29,7 +29,6 @@
   ],
   "seonjeong-eunpyeong": [
    "seonjeong-eunpyeong|2026-10-17|21:00|2면",
-   "seonjeong-eunpyeong|2026-10-18|12:00|2면",
    "seonjeong-eunpyeong|2026-10-18|21:00|3면",
    "seonjeong-eunpyeong|2026-10-20|18:00|3면",
    "seonjeong-eunpyeong|2026-10-20|19:00|3면",
@@ -70,5 +69,12 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-10-16"
+ "summary_sent": "2026-10-16",
+ "reminded": [],
+ "stats": {
+  "2026-10-16": {
+   "alerts": 0,
+   "errors": []
+  }
+ }
 }
