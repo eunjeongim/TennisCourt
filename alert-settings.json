@@ -12,32 +12,31 @@
   },
   "courts": {
     "mokdong": true,
-    "anyangcheon": true,
-    "daerim": true,
     "jangmi-eunpyeong": true,
     "seonjeong-eunpyeong": true,
     "eunpyeong-gumin": true,
+    "eungbong-sports-park-tennis": true,
+    "majang-tennis": true,
+    "gocheok-park-tennis": true,
+    "bongeun-tennis": true,
+    "jd-tennis-club-yeomchang": false,
+    "anyangcheon": true,
+    "daerim": true,
     "ujangsan-tennis": true,
     "gangseo-banghwa-tennis": true,
     "hwanggeumnae-tennis": true,
-    "eungbong-sports-park-tennis": true,
-    "majang-tennis": true,
     "gwanak-gumin": true,
-    "gocheok-park-tennis": true,
-    "bongeun-tennis": true,
     "bucheon-stadium-tennis": true,
     "bucheon-gymnasium-tennis-hard": true,
-    "bucheon-indoor-tennis": true,
-    "jd-tennis-club-yeomchang": false
+    "bucheon-indoor-tennis": true
   },
-  "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만).",
   "favorites": [
     "mokdong"
   ],
   "favorites_only": false,
-  "min_hours": 1,
+  "min_hours": 2,
   "rain": {
-    "skip": true,
+    "skip": false,
     "threshold": 60
   },
   "digest": true,
@@ -55,5 +54,6 @@
     "on": true,
     "time": "08:00"
   },
-  "public_status": true
+  "public_status": true,
+  "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
 }
