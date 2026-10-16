@@ -31,7 +31,8 @@
     "bucheon-indoor-tennis": true
   },
   "favorites": [
-    "mokdong"
+    "mokdong",
+    "songijeong"
   ],
   "favorites_only": false,
   "min_hours": 2,
@@ -55,5 +56,10 @@
     "time": "08:00"
   },
   "public_status": true,
+  "reach": {
+    "on": true,
+    "max_minutes": 30,
+    "origin": "any"
+  },
   "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
 }
