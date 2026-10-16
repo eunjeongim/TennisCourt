@@ -1,4 +1,7 @@
-# 빈자리 감시 프로그램(계정·토큰 포함)은 절대 올리지 않음
-monitor/
+# 계정 정보·노트북 전용 상태·로그는 절대 올리지 않음
+monitor/secrets.json
+monitor/state.json
+monitor/*.log
+monitor/debug/
 *.key
 __pycache__/

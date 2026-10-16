@@ -1,0 +1,13 @@
+{
+  "_설명": "빈자리 알림 설정. 시간은 24시간제 문자열.",
+  "weekday_from": "18:00",
+  "weekend_all_day": true,
+  "weekend_from": "06:00",
+  "days_ahead": 31,
+  "next_month_open_day": 25,
+  "courts": {
+    "mokdong": true,
+    "anyangcheon": true,
+    "daerim": true
+  }
+}

@@ -1,0 +1,58 @@
+# 테니스코트 빈자리 감시 (노트북이 꺼져 있어도 동작하는 클라우드 담당분)
+# 목동·공단·JD를 07~23시(KST)에 10분마다 조회 → vacancies-cloud.json 갱신 + 카카오톡 알림
+# 계정 정보는 저장소 Settings → Secrets and variables → Actions 에 보관 (로그에는 가려짐)
+name: monitor
+on:
+  schedule:
+    - cron: "*/10 22-23,0-13 * * *"   # UTC 22~13시 = KST 07~22시대 (GitHub 사정으로 몇 분씩 늦을 수 있음)
+  workflow_dispatch:
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      TZ: Asia/Seoul
+      MONITOR_SCOPE: cloud
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: monitor/requirements.txt
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('monitor/requirements.txt') }}
+      - name: Install
+        run: |
+          pip install -q -r monitor/requirements.txt
+          python -m playwright install --with-deps chromium > /dev/null
+      - name: Check vacancies
+        working-directory: monitor
+        env:
+          YCS_USER_ID: ${{ secrets.YCS_USER_ID }}
+          YCS_PASSWORD: ${{ secrets.YCS_PASSWORD }}
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          KAKAO_TOKEN_KEY: ${{ secrets.KAKAO_TOKEN_KEY }}
+        run: python run_monitor.py
+      - name: Save results
+        run: |
+          git config user.name "tennis-monitor-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vacancies-cloud.json monitor/state-cloud.json monitor/kakao-token.enc 2>/dev/null || true
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -q -m "chore: 빈자리 현황 갱신 (클라우드 $(date '+%m-%d %H:%M'))"
+          for i in 1 2 3; do
+            git pull -q --rebase origin main && git push -q origin main && exit 0
+            sleep 5
+          done
+          exit 1

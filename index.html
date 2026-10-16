@@ -433,7 +433,7 @@
       <div class="set-sec token-box">
         <h3>저장 권한 (GitHub 토큰)</h3>
         <input type="password" id="set-token" placeholder="github_pat_로 시작하는 토큰" autocomplete="off">
-        <p>설정은 GitHub의 alert-settings.json에 저장되고, PC 감시 프로그램이 다음 조회(최대 10분)부터 반영해요. 토큰은 이 기기 브라우저에만 저장돼요.</p>
+        <p>설정은 GitHub의 alert-settings.json에 저장되고, 감시 프로그램이 다음 조회(10~20분 안)부터 반영해요. 토큰은 이 기기 브라우저에만 저장돼요.</p>
         <details><summary>토큰 만드는 법</summary><ol>
           <li>github.com → 오른쪽 위 프로필 → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token</li>
           <li>Repository access: <b>Only select repositories → TennisCourt</b></li>
@@ -925,11 +925,15 @@ function courtNums(labels) {
   return [out.length ? `${out.join("·")}번` : "", ind.length ? `실내 ${ind.join("·")}번` : ""].filter(Boolean).join(", ");
 }
 
+const fmtTime = iso => { const t = new Date(iso); return `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`; };
+const isStale = iso => !iso || (new Date() - new Date(iso)) / 60000 > 90;
 function vacTimeText() {
-  const checked = new Date(vacData.checked_at);
-  const ageMin = Math.round((new Date() - checked) / 60000);
-  return `마지막 확인 ${checked.getMonth() + 1}/${checked.getDate()} ${String(checked.getHours()).padStart(2, "0")}:${String(checked.getMinutes()).padStart(2, "0")}` +
-    (ageMin > 90 ? " · PC가 꺼져 있어 최신이 아닐 수 있어요" : "");
+  const { cloud, pc } = vacData.checked;
+  const parts = [];
+  if (cloud) parts.push(`마지막 확인 ${fmtTime(cloud)}${isStale(cloud) ? " (지연 중)" : ""}`);
+  if (pc && isStale(pc)) parts.push(`안양천·대림·부천은 노트북이 꺼져 있어 ${fmtTime(pc)} 기준`);
+  else if (!cloud && pc) parts.push(`마지막 확인 ${fmtTime(pc)}`);
+  return parts.join(" · ");
 }
 
 // [[날짜, Map(시간대 → {s, labels})], ...] 같은 날짜·시간은 한 칩으로 묶는다 (목동은 코트 번호 표시)
@@ -965,7 +969,7 @@ function renderVacancy() {
   const mine = document.getElementById("vac-mine").checked;
   const timeEl = document.getElementById("vac-time");
   timeEl.textContent = vacTimeText();
-  timeEl.classList.toggle("stale", (new Date() - new Date(vacData.checked_at)) / 60000 > 90);
+  timeEl.classList.toggle("stale", isStale(vacData.checked.cloud) || isStale(vacData.checked.pc));
 
   const counts = {};
   const html = Object.entries(VAC_COURTS).map(([cid, info]) => {
@@ -990,7 +994,7 @@ function renderVacancy() {
   warn.textContent = failed.length ? `지금 응답이 없는 사이트: ${failed.join(", ")} (이전 조회 결과를 보여줘요)` : "";
   const wd = alertSettings.weekday, we = alertSettings.weekend;
   document.getElementById("vac-note").textContent =
-    `${Object.keys(VAC_COURTS).length}곳을 10분마다 확인해요. 진한 초록은 알림 조건(` +
+    `${Object.keys(VAC_COURTS).length}곳을 10~20분마다 확인해요. 진한 초록은 알림 조건(` +
     [wd.on ? `평일 ${wd.from}~${wd.to}` : "", we.on ? `주말 ${we.from}~${we.to}` : ""].filter(Boolean).join(", ") +
     `)에 맞는 시간이에요. 예약은 각 사이트에서 직접 해 주세요.`;
   document.querySelectorAll(".vac-more").forEach(b => b.addEventListener("click", () => {
@@ -1020,19 +1024,26 @@ function renderVacancy() {
   });
 }
 
+// 노트북(pc)과 GitHub 서버(cloud)가 각각 올리는 결과를 합친다.
+// GitHub Pages 재배포를 기다리지 않도록 저장소 원본(raw)에서 바로 읽는다.
+const RAW = "https://raw.githubusercontent.com/eunjeongim/TennisCourt/main/";
+const fetchJson = name => fetch(`${RAW}${name}?t=${Date.now()}`, { cache: "no-store" })
+  .then(r => r.ok ? r.json() : null).catch(() => null);
+
 function loadVacancy() {
   if (location.protocol === "file:") return;
-  fetch(`vacancies.json?t=${Date.now()}`, { cache: "no-store" })
-    .then(r => r.ok ? r.json() : Promise.reject(r.status))
-    .then(data => {
-      vacData = data;
-      // 예전 형식(meta 없음) 호환: 코트 id만으로 목록 구성
-      VAC_COURTS = data.meta && Object.keys(data.meta).length ? data.meta
-        : Object.fromEntries(Object.keys(data.courts).map(id => [id, { name: (COURTS.find(c => c.id === id) || { name: id }).name, url: "" }]));
-      document.getElementById("vacancy").hidden = false;
-      renderVacancy();
-    })
-    .catch(() => {});
+  Promise.all([fetchJson("vacancies-cloud.json"), fetchJson("vacancies-pc.json")]).then(([cloud, pc]) => {
+    if (!cloud && !pc) return;
+    const order = c => (c && c.meta) || {};
+    VAC_COURTS = { ...order(cloud), ...order(pc) };
+    if (VAC_COURTS.mokdong) VAC_COURTS = { mokdong: VAC_COURTS.mokdong, ...VAC_COURTS };  // 선호 코트를 맨 앞에
+    vacData = {
+      checked: { cloud: cloud && cloud.checked_at, pc: pc && pc.checked_at },
+      courts: { ...((cloud && cloud.courts) || {}), ...((pc && pc.courts) || {}) }
+    };
+    document.getElementById("vacancy").hidden = false;
+    renderVacancy();
+  });
 }
 document.getElementById("vac-mine").addEventListener("change", e => {
   try { localStorage.setItem("tennis-vac-mine", e.target.checked ? "1" : "0"); } catch (err) {}
@@ -1050,7 +1061,7 @@ const HOURS = Array.from({ length: 19 }, (_, i) => `${String(i + 6).padStart(2, 
 
 function loadAlertSettings() {
   if (location.protocol === "file:") return Promise.resolve();
-  return fetch(`${SETTINGS_PATH}?t=${Date.now()}`, { cache: "no-store" })
+  return fetch(`${RAW}${SETTINGS_PATH}?t=${Date.now()}`, { cache: "no-store" })
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(s => {
       alertSettings = { ...DEFAULT_ALERT, ...s, weekday: { ...DEFAULT_ALERT.weekday, ...s.weekday }, weekend: { ...DEFAULT_ALERT.weekend, ...s.weekend }, courts: s.courts || {} };
@@ -1102,7 +1113,7 @@ async function saveAlertSettings() {
     if (!res.ok) throw new Error(`저장 실패 (${res.status})`);
     alertSettings = { ...next };
     renderVacancy();
-    setMsg("저장했어요. 다음 조회(최대 10분)부터 적용돼요.", "ok");
+    setMsg("저장했어요. 다음 조회(10~20분 안)부터 적용돼요.", "ok");
     setTimeout(() => dlg.close(), 1200);
   } catch (err) {
     setMsg(err.message || "저장하지 못했어요.", "err");
