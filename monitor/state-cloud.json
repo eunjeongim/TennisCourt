@@ -1,16 +1,37 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-10-18|11:00|코트-02",
+   "mokdong|2026-10-18|11:00|코트-08",
+   "mokdong|2026-10-18|11:00|코트-11",
+   "mokdong|2026-10-18|11:00|코트-12",
+   "mokdong|2026-10-18|11:00|코트-13",
+   "mokdong|2026-10-18|11:00|코트-14",
+   "mokdong|2026-10-18|11:00|코트-16(월,화,목,금 레슨)",
+   "mokdong|2026-10-18|11:00|코트-17(월,화,목,금 레슨)",
+   "mokdong|2026-10-18|11:00|코트-18(월,화,목,금 레슨)",
+   "mokdong|2026-10-18|13:00|코트-01",
+   "mokdong|2026-10-18|13:00|코트-07",
+   "mokdong|2026-10-18|13:00|코트-15",
+   "mokdong|2026-10-18|15:00|코트-03",
+   "mokdong|2026-10-18|17:00|코트-09",
+   "mokdong|2026-10-25|13:00|코트-10"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
   "eungbong-sports-park-tennis": [
-   "eungbong-sports-park-tennis|2026-10-18|09:00|2면",
-   "eungbong-sports-park-tennis|2026-10-18|09:00|5면",
-   "eungbong-sports-park-tennis|2026-10-18|09:00|6면",
-   "eungbong-sports-park-tennis|2026-10-18|10:00|1면",
-   "eungbong-sports-park-tennis|2026-10-18|10:00|3면",
-   "eungbong-sports-park-tennis|2026-10-18|10:00|4면"
+   "eungbong-sports-park-tennis|2026-10-18|11:00|1면",
+   "eungbong-sports-park-tennis|2026-10-18|11:00|2면",
+   "eungbong-sports-park-tennis|2026-10-18|11:00|3면",
+   "eungbong-sports-park-tennis|2026-10-18|11:00|4면",
+   "eungbong-sports-park-tennis|2026-10-18|11:00|5면",
+   "eungbong-sports-park-tennis|2026-10-18|11:00|6면",
+   "eungbong-sports-park-tennis|2026-11-01|06:00|6면",
+   "eungbong-sports-park-tennis|2026-11-01|10:00|1면",
+   "eungbong-sports-park-tennis|2026-11-01|10:00|2면",
+   "eungbong-sports-park-tennis|2026-11-01|12:00|3면",
+   "eungbong-sports-park-tennis|2026-11-01|12:00|4면"
   ],
   "majang-tennis": [],
   "gwanak-gumin": [],
@@ -31,7 +52,7 @@
    "errors": []
   },
   "2026-10-18": {
-   "alerts": 6,
+   "alerts": 32,
    "errors": []
   }
  }
