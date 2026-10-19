@@ -4,7 +4,13 @@
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
-  "eungbong-sports-park-tennis": [],
+  "eungbong-sports-park-tennis": [
+   "eungbong-sports-park-tennis|2026-11-01|06:00|6면",
+   "eungbong-sports-park-tennis|2026-11-01|10:00|1면",
+   "eungbong-sports-park-tennis|2026-11-01|10:00|2면",
+   "eungbong-sports-park-tennis|2026-11-01|12:00|3면",
+   "eungbong-sports-park-tennis|2026-11-01|12:00|4면"
+  ],
   "majang-tennis": [],
   "gwanak-gumin": [],
   "gocheok-park-tennis": [],
@@ -28,7 +34,7 @@
    "errors": []
   },
   "2026-10-19": {
-   "alerts": 0,
+   "alerts": 5,
    "errors": []
   }
  }
