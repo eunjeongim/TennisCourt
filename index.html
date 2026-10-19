@@ -518,6 +518,8 @@
         <h3>저장 권한 (GitHub 토큰)</h3>
         <!-- 비밀번호 관리자(아이폰 키체인·Chrome)가 토큰을 기억해서 자동으로 채우도록 로그인 양식처럼 만든다 -->
         <input type="text" class="uname" name="username" autocomplete="username" value="TennisCourt GitHub 토큰" readonly tabindex="-1" aria-hidden="true">
+        <p id="token-saved" hidden>✓ 이 기기에 토큰이 저장돼 있어요. <button type="button" class="btn-ghost" id="token-change">토큰 바꾸기</button></p>
+        <div id="token-edit">
         <input type="password" id="set-token" name="password" placeholder="github_pat_로 시작하는 토큰" autocomplete="current-password">
         <p>설정은 GitHub의 alert-settings.json에 저장되고, 감시 프로그램이 다음 조회(10~20분 안)부터 반영해요. 처음 저장할 때 '암호를 저장할까요?'가 뜨면 <b>저장</b>을 눌러 주세요. 칸이 비어 있어도 탭하면 키보드 위에 저장된 토큰이 떠요.</p>
         <details><summary>토큰 만드는 법</summary><ol>
@@ -525,6 +527,7 @@
           <li>Repository access: <b>Only select repositories → TennisCourt</b></li>
           <li>Permissions → Repository permissions → <b>Contents: Read and write</b></li>
           <li>Generate token → 복사해서 위 칸에 붙여 넣기</li></ol></details>
+        </div>
       </form>
     </div>
     <div class="dlg-foot"><span class="dlg-msg" id="set-msg"></span>
@@ -1387,9 +1390,16 @@ function fillDialog() {
   $("set-public").checked = a.public_status;
   $("set-reach").checked = a.reach.on; $("set-reach-origin").value = a.reach.origin; $("set-reach-min").value = String(a.reach.max_minutes);
   $("set-token").value = savedToken();
-  if (!$("set-token").value) recallToken().then(t => { if (t && !$("set-token").value) $("set-token").value = t; });
+  showTokenEdit(!$("set-token").value);
+  if (!$("set-token").value) recallToken().then(t => { if (t && !$("set-token").value) { $("set-token").value = t; showTokenEdit(false); } });
   setMsg("");
 }
+// 토큰이 저장돼 있으면 입력 칸은 숨기고 '저장됨'만 보여 준다
+function showTokenEdit(on) {
+  $("token-edit").hidden = !on;
+  $("token-saved").hidden = on;
+}
+$("token-change").addEventListener("click", () => { $("set-token").value = ""; showTokenEdit(true); $("set-token").focus(); });
 // 토큰은 localStorage에 두되, 브라우저가 저장소를 비워도 되살릴 수 있게 비밀번호 관리자에도 맡긴다
 function savedToken() { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } }
 async function recallToken() {
@@ -1458,6 +1468,7 @@ async function saveAlertSettings() {
     setTimeout(() => dlg.close(), 1200);
   } catch (err) {
     setMsg(err.message || "저장하지 못했어요.", "err");
+    if (/토큰/.test(err.message)) showTokenEdit(true);  // 만료·권한 문제면 다시 넣을 수 있게 칸을 연다
   }
 }
 
