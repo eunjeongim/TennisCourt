@@ -25,6 +25,7 @@ from pathlib import Path
 import extra_sources
 import features
 import kakao
+import push
 import mokdong
 import publish
 import yeongdeungpo
@@ -357,7 +358,12 @@ def main(dry_run=False):
     for text, url in outbox:
         print(text, "\n ->", url, "\n")
         if not dry_run:
-            kakao.send(text, url)
+            # 카카오 '나에게 보내기'는 팝업이 안 떠서 ntfy로도 보낸다. 한쪽이 실패해도 다른 쪽은 보낸다.
+            for sender in (push.send, kakao.send):
+                try:
+                    sender(text, url)
+                except Exception:
+                    logging.error(traceback.format_exc())
     if not dry_run:
         STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"[{now:%m-%d %H:%M}] 완료: 조회 {len(found)}곳, 실패 {len(errors)}곳, 알림 {len(outbox)}건"

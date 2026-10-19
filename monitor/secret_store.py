@@ -18,6 +18,7 @@ ENV_MAP = {
     "KAKAO_REST_API_KEY": ("kakao", "rest_api_key"),
     "KAKAO_CLIENT_SECRET": ("kakao", "client_secret"),
     "KAKAO_TOKEN_KEY": ("kakao", "token_key"),
+    "NTFY_TOPIC": ("ntfy", "topic"),
 }
 
 

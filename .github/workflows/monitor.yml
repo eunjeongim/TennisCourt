@@ -44,6 +44,7 @@ jobs:
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
           KAKAO_TOKEN_KEY: ${{ secrets.KAKAO_TOKEN_KEY }}
           SEOUL_API_KEY: ${{ secrets.SEOUL_API_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python run_monitor.py
       - name: Save results
         run: |
