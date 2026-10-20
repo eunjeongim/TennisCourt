@@ -1,12 +1,12 @@
 {
  "seen": {
-  "mokdong": [
-   "mokdong|2026-10-21|20:00|코트-03"
-  ],
+  "mokdong": [],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
-  "eungbong-sports-park-tennis": [],
+  "eungbong-sports-park-tennis": [
+   "eungbong-sports-park-tennis|2026-11-01|06:00|6면"
+  ],
   "majang-tennis": [],
   "gwanak-gumin": [],
   "gocheok-park-tennis": [],
@@ -33,8 +33,10 @@
    "errors": []
   },
   "2026-10-20": {
-   "alerts": 1,
-   "errors": []
+   "alerts": 2,
+   "errors": [
+    "봉은"
+   ]
   }
  }
 }
