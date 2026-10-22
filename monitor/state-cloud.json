@@ -13,14 +13,8 @@
  },
  "last_error": "",
  "summary_sent": "2026-10-22",
- "reminded": [
-  "mokdong|2026-10-22|09:30|일반 예약 "
- ],
+ "reminded": [],
  "stats": {
-  "2026-10-19": {
-   "alerts": 6,
-   "errors": []
-  },
   "2026-10-20": {
    "alerts": 2,
    "errors": [
@@ -32,6 +26,10 @@
    "errors": []
   },
   "2026-10-22": {
+   "alerts": 0,
+   "errors": []
+  },
+  "2026-10-23": {
    "alerts": 0,
    "errors": []
   }
