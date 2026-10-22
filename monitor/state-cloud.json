@@ -12,15 +12,11 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-10-21",
+ "summary_sent": "2026-10-22",
  "reminded": [
-  "mokdong|2026-10-21|09:30|일반 예약 "
+  "mokdong|2026-10-22|09:30|일반 예약 "
  ],
  "stats": {
-  "2026-10-18": {
-   "alerts": 42,
-   "errors": []
-  },
   "2026-10-19": {
    "alerts": 6,
    "errors": []
@@ -32,6 +28,10 @@
    ]
   },
   "2026-10-21": {
+   "alerts": 0,
+   "errors": []
+  },
+  "2026-10-22": {
    "alerts": 0,
    "errors": []
   }
