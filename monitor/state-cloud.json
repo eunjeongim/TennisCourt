@@ -1,6 +1,9 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-10-24|13:00|코트-01",
+   "mokdong|2026-10-24|15:00|코트-07"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -12,8 +15,10 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-10-22",
- "reminded": [],
+ "summary_sent": "2026-10-23",
+ "reminded": [
+  "mokdong|2026-10-23|09:30|일반 예약 "
+ ],
  "stats": {
   "2026-10-20": {
    "alerts": 2,
@@ -30,7 +35,7 @@
    "errors": []
   },
   "2026-10-23": {
-   "alerts": 0,
+   "alerts": 2,
    "errors": []
   }
  }
