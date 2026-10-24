@@ -1,6 +1,8 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-10-25|13:00|코트-17(월,화,목,금 레슨)"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -28,7 +30,7 @@
    "errors": []
   },
   "2026-10-24": {
-   "alerts": 1,
+   "alerts": 2,
    "errors": []
   }
  }
