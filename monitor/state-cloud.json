@@ -13,15 +13,8 @@
  },
  "last_error": "",
  "summary_sent": "2026-10-25",
- "reminded": [
-  "anyangcheon|2026-10-25|day|다음 달 남",
-  "daerim|2026-10-25|day|다음 달 남"
- ],
+ "reminded": [],
  "stats": {
-  "2026-10-22": {
-   "alerts": 0,
-   "errors": []
-  },
   "2026-10-23": {
    "alerts": 2,
    "errors": []
@@ -31,6 +24,10 @@
    "errors": []
   },
   "2026-10-25": {
+   "alerts": 0,
+   "errors": []
+  },
+  "2026-10-26": {
    "alerts": 0,
    "errors": []
   }
