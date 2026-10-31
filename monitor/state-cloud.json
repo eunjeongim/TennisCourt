@@ -12,13 +12,9 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-10-30",
+ "summary_sent": "2026-10-31",
  "reminded": [],
  "stats": {
-  "2026-10-27": {
-   "alerts": 0,
-   "errors": []
-  },
   "2026-10-28": {
    "alerts": 0,
    "errors": []
@@ -32,6 +28,10 @@
    "errors": [
     "봉은"
    ]
+  },
+  "2026-10-31": {
+   "alerts": 0,
+   "errors": []
   }
  }
 }
