@@ -15,12 +15,6 @@
  "summary_sent": "2026-11-02",
  "reminded": [],
  "stats": {
-  "2026-10-30": {
-   "alerts": 1,
-   "errors": [
-    "봉은"
-   ]
-  },
   "2026-10-31": {
    "alerts": 0,
    "errors": []
@@ -30,6 +24,10 @@
    "errors": []
   },
   "2026-11-02": {
+   "alerts": 0,
+   "errors": []
+  },
+  "2026-11-03": {
    "alerts": 0,
    "errors": []
   }
