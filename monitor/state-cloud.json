@@ -15,10 +15,6 @@
  "summary_sent": "2026-11-05",
  "reminded": [],
  "stats": {
-  "2026-11-02": {
-   "alerts": 0,
-   "errors": []
-  },
   "2026-11-03": {
    "alerts": 0,
    "errors": []
@@ -28,6 +24,10 @@
    "errors": []
   },
   "2026-11-05": {
+   "alerts": 0,
+   "errors": []
+  },
+  "2026-11-06": {
    "alerts": 0,
    "errors": []
   }
