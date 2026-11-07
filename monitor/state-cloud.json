@@ -1,6 +1,8 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-07|15:00|코트-07"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -12,7 +14,7 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-11-06",
+ "summary_sent": "2026-11-07",
  "reminded": [],
  "stats": {
   "2026-11-04": {
@@ -28,7 +30,7 @@
    "errors": []
   },
   "2026-11-07": {
-   "alerts": 0,
+   "alerts": 1,
    "errors": []
   }
  }
