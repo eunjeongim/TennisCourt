@@ -1,6 +1,8 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-14|19:00|코트-03"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -30,7 +32,7 @@
    ]
   },
   "2026-11-10": {
-   "alerts": 0,
+   "alerts": 1,
    "errors": []
   }
  }
