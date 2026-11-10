@@ -1,8 +1,6 @@
 {
  "seen": {
-  "mokdong": [
-   "mokdong|2026-11-14|19:00|코트-03"
-  ],
+  "mokdong": [],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -17,10 +15,6 @@
  "summary_sent": "2026-11-10",
  "reminded": [],
  "stats": {
-  "2026-11-07": {
-   "alerts": 2,
-   "errors": []
-  },
   "2026-11-08": {
    "alerts": 11,
    "errors": []
@@ -33,6 +27,10 @@
   },
   "2026-11-10": {
    "alerts": 1,
+   "errors": []
+  },
+  "2026-11-11": {
+   "alerts": 0,
    "errors": []
   }
  }
