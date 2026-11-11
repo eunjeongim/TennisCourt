@@ -11,7 +11,7 @@
   "bongeun-tennis": [],
   "jd-tennis-club-yeomchang": []
  },
- "last_error": "",
+ "last_error": "목동 조회 실패 facilities/place_time_state_list HTTP 500",
  "summary_sent": "2026-11-11",
  "reminded": [],
  "stats": {
@@ -31,7 +31,9 @@
   },
   "2026-11-11": {
    "alerts": 0,
-   "errors": []
+   "errors": [
+    "목동"
+   ]
   }
  }
 }
