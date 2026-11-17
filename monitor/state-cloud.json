@@ -1,10 +1,15 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-17|18:00|코트-02",
+   "mokdong|2026-11-21|09:00|코트-17(월,화,목,금 레슨)"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
-  "eungbong-sports-park-tennis": [],
+  "eungbong-sports-park-tennis": [
+   "eungbong-sports-park-tennis|2026-12-01|18:00|3면"
+  ],
   "majang-tennis": [],
   "gwanak-gumin": [],
   "gocheok-park-tennis": [],
@@ -12,7 +17,7 @@
   "jd-tennis-club-yeomchang": []
  },
  "last_error": "",
- "summary_sent": "2026-11-16",
+ "summary_sent": "2026-11-17",
  "reminded": [],
  "stats": {
   "2026-11-14": {
@@ -34,7 +39,7 @@
    ]
   },
   "2026-11-17": {
-   "alerts": 0,
+   "alerts": 3,
    "errors": []
   }
  }
