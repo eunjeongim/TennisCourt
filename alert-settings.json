@@ -2,7 +2,7 @@
   "enabled": true,
   "weekday": {
     "on": true,
-    "from": "18:00",
+    "from": "17:00",
     "to": "23:00"
   },
   "weekend": {
@@ -62,8 +62,8 @@
   "public_status": true,
   "reach": {
     "on": true,
-    "max_minutes": 30,
-    "origin": "any"
+    "origin": "any",
+    "max_minutes": 30
   },
   "_설명": "웹페이지 빈자리 현황의 [알림 설정]에서 바꿀 수 있어요. 시간은 시작 시각 기준(from 이상 to 미만)."
 }
