@@ -1,6 +1,6 @@
 """로그인 없이 빈자리를 읽을 수 있는 추가 코트들.
 
-- fmcs: 은평·강서·성동·관악·구로·강남 시설관리공단 (목동과 같은 업체 시스템, 로그인 불필요)
+- fmcs: 은평·강서·성동·관악·구로·강남·중구 시설관리공단 (목동과 같은 업체 시스템, 로그인 불필요)
     place_month_state_list  state_cd 10/11 = 예약가능, 15 = 추첨, 20 = 마감/완료, 30 = 휴관
     place_time_state_list   use_yn N = 빈자리, Y = 예약됨, E = 마감
     ⚠️ 응답의 detail 필드에 예약자 실명이 들어 있는 곳이 있으므로 읽지도 저장하지도 않는다.
@@ -33,6 +33,7 @@ FMCS_COURTS = {
     "gwanak-gumin": dict(name="관악구민운동장", base="https://booking.gwanakgongdan.or.kr", page="/booking/1515", com="KWAN_AK03", part="02", places=["285", "286", "287", "288"]),
     "gocheok-park-tennis": dict(name="고척근린공원", base="https://www.guro-gurosportsclub.or.kr", page="/fmcs/3", com="GUROSP03", part="03", places=["1", "2", "3"]),
     "bongeun-tennis": dict(name="봉은", base="https://life.gangnam.go.kr", page="/fmcs/54", com="GNCC05", part="04", places=["34", "35", "36", "37"]),
+    "songijeong": dict(name="손기정", base="https://www.e-junggu.or.kr", page="/fmcs/314", com="JUNGGU06", part="09", places=["8", "9"]),
 }
 BUCHEON_COURTS = {
     "bucheon-stadium-tennis": dict(name="부천종합운동장", seq="115"),

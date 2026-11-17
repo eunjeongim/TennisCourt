@@ -33,6 +33,7 @@ OPEN_SCHEDULES = {
     "majang-tennis": [dict(kind="monthly", day=1, note="이번 달 타구민 수시대관 시작")],
     "bongeun-tennis": [dict(kind="monthly", day=15, note="다음 달 사용분 접수 시작 (~25일)")],
     "gocheok-park-tennis": [dict(kind="monthly", day=25, note="다음 달 사용분 접수 시작")],
+    "songijeong": [dict(kind="monthly", day=27, at="09:00", note="다음 달 사용분 타구민 접수 시작 (중구민은 21일)")],
 }
 
 
