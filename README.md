@@ -18,7 +18,7 @@
 
 ## 빈자리 감시
 
-- **GitHub Actions** (`MONITOR_SCOPE=cloud`): 목동·은평·성동·구로·강남·중구(손기정)·JD. 노트북이 꺼져 있어도 동작.
+- **GitHub Actions** (`MONITOR_SCOPE=cloud`): 목동·은평·성동·구로·강남·중구(손기정)·용산어린이정원·JD. 노트북이 꺼져 있어도 동작.
 - **노트북 작업 스케줄러** `TennisCourtAlert` (`MONITOR_SCOPE=pc`): 해외 접속을 막는 영등포·부천·관악·강서.
 - 계정 정보는 `monitor/secrets.json`(노트북, 저장소에 올리지 않음)과 GitHub Secrets에 보관.
 - 카카오 권한이 만료되면 `python monitor/kakao_auth.py`를 다시 실행하고 `monitor/kakao-token.enc`를 커밋.

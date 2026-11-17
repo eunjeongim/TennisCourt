@@ -1055,17 +1055,18 @@ window.COURTS = [
       ]
     ],
     "booking": [
-      "용산어린이정원 누리집 스포츠필드 신청 (서울시 통합회원 로그인)",
-      "정원 입장 예약·신분증 필요"
+      "용산어린이정원 누리집 스포츠필드 신청 (누리집 통합회원 로그인) · 선착순",
+      "매월 20일 10:00 다음 달 사용분 오픈 · 사용 1일 전 12:00까지 · 1인 월 최대 2회",
+      "하드코트 회차당 4팀, 잔디코트 회차당 2팀 · 정원 입장 예약·신분증 필요"
     ],
     "links": {
-      "reserve": "https://yongsanparkstory.kr/program/reservation.html",
+      "reserve": "https://yongsanparkstory.kr/sports_field",
       "info": "https://seoul-tennis.com/yongsan-gu",
       "tel": "070-8833-5800"
     },
     "sources": [
       "https://seoul-tennis.com/yongsan-gu",
-      "https://yongsanparkstory.kr/program/reservation.html"
+      "https://yongsanparkstory.kr/sports_field_detail?no=15"
     ],
     "transit_gongdeok": {
       "min": 20,

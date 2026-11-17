@@ -6,6 +6,8 @@
     ⚠️ 응답의 detail 필드에 예약자 실명이 들어 있는 곳이 있으므로 읽지도 저장하지도 않는다.
 - bucheon: 부천시 시설 예약 HTML 달력 (2시간 단위, 다음 달은 매월 20일 10시 오픈)
 - jd: JD Tennis Club 공개 일정 API
+- yongsan: 용산어린이정원 스포츠필드 달력 (로그인 불필요, 2시간 4회차, 다음 달은 매월 20일 10시 오픈)
+    li.time_tab 클래스 end = 마감, not = 예약불가(1일 전 12시 지남). 괄호 안 숫자가 남은 팀 수.
 """
 import re
 import time
@@ -42,6 +44,8 @@ BUCHEON_COURTS = {
 }
 BUCHEON_URL = "https://reserv.bucheon.go.kr/site/main/lending/lendingDetail"
 JD_ID, JD_URL = "jd-tennis-club-yeomchang", "https://www.jdtennisclub.com/"
+YONGSAN_ID, YONGSAN_BASE = "yongsan-park-garden", "https://yongsanparkstory.kr"
+YONGSAN_FIELDS = {"15": "하드", "6": "잔디"}  # sports_field_detail?no=
 
 
 def _session():
@@ -170,18 +174,45 @@ def fetch_jd(enabled_ids, today=None):
         return {}, {JD_ID: str(ex)[:120]}
 
 
+def fetch_yongsan(enabled_ids, today=None):
+    """이번 달과 다음 달 달력에서 남은 팀이 있는 회차. 다음 달이 아직 안 열렸으면 회차가 없다."""
+    if YONGSAN_ID not in enabled_ids:
+        return {}, {}
+    today = today or date.today()
+    nxt = (today.replace(day=1) + timedelta(days=32)).replace(day=1)
+    http, slots = _session(), []
+    try:
+        for no, kind in YONGSAN_FIELDS.items():
+            for month in (today, nxt):
+                time.sleep(PAUSE)
+                r = http.post(YONGSAN_BASE + "/_components/calendar.php", timeout=12,
+                              data=dict(year=month.year, month=f"{month.month:02d}", pg_gubun="main", pg_no=no))
+                r.raise_for_status()
+                for cls, d, s, e, inner in re.findall(
+                        r"""<li class="time_tab ?([^"]*)"\s*onClick="reservDate\('(\d{4}-\d\d-\d\d)','(\d\d:\d\d) ~ (\d\d:\d\d)'"""
+                        r"""[^"]*"[^>]*>(.*?)</li>""", r.text, re.S):
+                    left = re.search(r"\(\s*(\d+)\s*\)", re.sub(r"<[^>]*>", " ", inner))
+                    day = date.fromisoformat(d)
+                    if day >= today and not {"end", "not"} & set(cls.split()) and left and int(left.group(1)) > 0:
+                        slots.append((day, s, e, kind))
+        return {YONGSAN_ID: slots}, {}
+    except Exception as ex:
+        return {}, {YONGSAN_ID: str(ex)[:120]}
+
+
 def court_info():
     """{court_id: (짧은 이름, 예약 URL)}"""
     info = {cid: (c["name"], c["base"] + c["page"]) for cid, c in FMCS_COURTS.items()}
     info.update({cid: (c["name"], f"{BUCHEON_URL}?lending_info_seq={c['seq']}&inst_cate=01") for cid, c in BUCHEON_COURTS.items()})
     info[JD_ID] = ("JD Tennis Club", JD_URL)
+    info[YONGSAN_ID] = ("용산어린이정원", YONGSAN_BASE + "/sports_field")
     return info
 
 
 def fetch_all(enabled_ids, today=None):
     found, errors = {}, {}
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        futs = [pool.submit(f, enabled_ids, today) for f in (fetch_fmcs, fetch_bucheon, fetch_jd)]
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futs = [pool.submit(f, enabled_ids, today) for f in (fetch_fmcs, fetch_bucheon, fetch_jd, fetch_yongsan)]
         for fut in futs:
             res, err = fut.result()
             found.update(res)
