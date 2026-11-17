@@ -1,11 +1,6 @@
 {
  "seen": {
-  "mokdong": [
-   "mokdong|2026-11-18|17:00|코트-13",
-   "mokdong|2026-11-18|17:00|코트-18(월,화,목,금 레슨)",
-   "mokdong|2026-11-19|17:00|코트-09",
-   "mokdong|2026-11-23|17:00|코트-08"
-  ],
+  "mokdong": [],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -22,12 +17,6 @@
  "summary_sent": "2026-11-17",
  "reminded": [],
  "stats": {
-  "2026-11-14": {
-   "alerts": 0,
-   "errors": [
-    "목동"
-   ]
-  },
   "2026-11-15": {
    "alerts": 0,
    "errors": [
@@ -43,6 +32,12 @@
   "2026-11-17": {
    "alerts": 7,
    "errors": []
+  },
+  "2026-11-18": {
+   "alerts": 0,
+   "errors": [
+    "손기정"
+   ]
   }
  }
 }
