@@ -1,19 +1,13 @@
 {
  "seen": {
   "mokdong": [
-   "mokdong|2026-11-18|17:00|코트-13",
-   "mokdong|2026-11-18|17:00|코트-18(월,화,목,금 레슨)",
-   "mokdong|2026-11-19|17:00|코트-09",
-   "mokdong|2026-11-23|17:00|코트-08",
-   "mokdong|2026-11-25|17:00|코트-18(월,화,목,금 레슨)"
+   "mokdong|2026-11-21|17:00|코트-13",
+   "mokdong|2026-11-21|19:00|코트-18(월,화,목,금 레슨)"
   ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
-  "eungbong-sports-park-tennis": [
-   "eungbong-sports-park-tennis|2026-12-02|17:00|1면",
-   "eungbong-sports-park-tennis|2026-12-02|17:00|2면"
-  ],
+  "eungbong-sports-park-tennis": [],
   "majang-tennis": [],
   "gwanak-gumin": [],
   "gocheok-park-tennis": [],
@@ -43,7 +37,7 @@
    "errors": []
   },
   "2026-11-18": {
-   "alerts": 7,
+   "alerts": 9,
    "errors": [
     "손기정"
    ]
