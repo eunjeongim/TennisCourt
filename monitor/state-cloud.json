@@ -1,8 +1,6 @@
 {
  "seen": {
-  "mokdong": [
-   "mokdong|2026-11-26|17:00|코트-13"
-  ],
+  "mokdong": [],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -19,12 +17,6 @@
  "summary_sent": "2026-11-19",
  "reminded": [],
  "stats": {
-  "2026-11-16": {
-   "alerts": 0,
-   "errors": [
-    "목동"
-   ]
-  },
   "2026-11-17": {
    "alerts": 7,
    "errors": []
@@ -43,6 +35,10 @@
     "은평구민체육센터",
     "장미(은평)"
    ]
+  },
+  "2026-11-20": {
+   "alerts": 0,
+   "errors": []
   }
  }
 }
