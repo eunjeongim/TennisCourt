@@ -1,6 +1,8 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-23|17:00|코트-06"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -14,7 +16,7 @@
   "yongsan-park-garden": []
  },
  "last_error": "",
- "summary_sent": "2026-11-18",
+ "summary_sent": "2026-11-19",
  "reminded": [],
  "stats": {
   "2026-11-16": {
@@ -34,8 +36,13 @@
    ]
   },
   "2026-11-19": {
-   "alerts": 0,
-   "errors": []
+   "alerts": 1,
+   "errors": [
+    "선정(은평)",
+    "손기정",
+    "은평구민체육센터",
+    "장미(은평)"
+   ]
   }
  }
 }
