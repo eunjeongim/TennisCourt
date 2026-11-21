@@ -1,6 +1,14 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-21|17:00|코트-07",
+   "mokdong|2026-11-21|19:00|코트-01",
+   "mokdong|2026-11-21|19:00|코트-17(월,화,목,금 레슨)",
+   "mokdong|2026-11-22|17:00|코트-12",
+   "mokdong|2026-11-22|19:00|코트-18(월,화,목,금 레슨)",
+   "mokdong|2026-11-28|17:00|코트-02",
+   "mokdong|2026-11-28|19:00|코트-18(월,화,목,금 레슨)"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -14,7 +22,7 @@
   "yongsan-park-garden": []
  },
  "last_error": "",
- "summary_sent": "2026-11-20",
+ "summary_sent": "2026-11-21",
  "reminded": [],
  "stats": {
   "2026-11-18": {
@@ -39,8 +47,10 @@
    ]
   },
   "2026-11-21": {
-   "alerts": 0,
-   "errors": []
+   "alerts": 7,
+   "errors": [
+    "손기정"
+   ]
   }
  }
 }
