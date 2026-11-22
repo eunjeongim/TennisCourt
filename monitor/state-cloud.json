@@ -1,12 +1,6 @@
 {
  "seen": {
-  "mokdong": [
-   "mokdong|2026-11-22|11:00|코트-05",
-   "mokdong|2026-11-22|11:00|코트-11",
-   "mokdong|2026-11-22|19:00|코트-12",
-   "mokdong|2026-11-29|11:00|코트-14",
-   "mokdong|2026-11-29|19:00|코트-14"
-  ],
+  "mokdong": [],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -46,7 +40,9 @@
   },
   "2026-11-22": {
    "alerts": 5,
-   "errors": []
+   "errors": [
+    "손기정"
+   ]
   }
  }
 }
