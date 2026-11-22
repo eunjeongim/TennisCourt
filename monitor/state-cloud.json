@@ -1,6 +1,12 @@
 {
  "seen": {
-  "mokdong": [],
+  "mokdong": [
+   "mokdong|2026-11-22|11:00|코트-05",
+   "mokdong|2026-11-22|11:00|코트-11",
+   "mokdong|2026-11-22|19:00|코트-12",
+   "mokdong|2026-11-29|11:00|코트-14",
+   "mokdong|2026-11-29|19:00|코트-14"
+  ],
   "jangmi-eunpyeong": [],
   "seonjeong-eunpyeong": [],
   "eunpyeong-gumin": [],
@@ -14,7 +20,7 @@
   "yongsan-park-garden": []
  },
  "last_error": "",
- "summary_sent": "2026-11-21",
+ "summary_sent": "2026-11-22",
  "reminded": [],
  "stats": {
   "2026-11-19": {
@@ -39,7 +45,7 @@
    ]
   },
   "2026-11-22": {
-   "alerts": 0,
+   "alerts": 5,
    "errors": []
   }
  }
