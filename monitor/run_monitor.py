@@ -177,12 +177,32 @@ def collect(cfg):
 MOKDONG_INDOOR = {4, 5, 6}
 
 
+_COURTS = {}
+
+
+def place_kind(cid, labels):
+    """빈자리 라벨들이 실내인지 야외인지: '실내' / '야외' / '야외·실내' (courts.js 정보 기준)"""
+    if not _COURTS:
+        _COURTS.update(features.load_courts())
+    court = _COURTS.get(cid)
+    if not court:
+        return ""
+    kinds = {"실내" if features.is_indoor(court, label) else "야외" for label in (labels or [""])}
+    return "·".join(k for k in ("야외", "실내") if k in kinds)
+
+
+def name_with_kind(cid, slots):
+    """'응봉(야외)', '목동(야외·실내)'. 이름에 이미 실내/야외가 들어 있으면 그대로 ('부천실내')."""
+    name, kind = COURT_INFO[cid][0], place_kind(cid, [x[3] for x in slots])
+    return name if not kind or kind in name else f"{name}({kind})"
+
+
 def court_numbers(labels):
-    """['코트-07', '코트-05', '코트-17(월,화,목,금 레슨)'] → '7·17번, 실내 5번'"""
+    """['코트-07', '코트-05', '코트-17(월,화,목,금 레슨)'] → '야외 7·17번, 실내 5번'"""
     nums = sorted({int(m.group(1)) for m in (re.search(r"(\d+)", x) for x in labels) if m})
     outdoor = [str(n) for n in nums if n not in MOKDONG_INDOOR]
     indoor = [str(n) for n in nums if n in MOKDONG_INDOOR]
-    parts = ([f"{'·'.join(outdoor)}번"] if outdoor else []) + ([f"실내 {'·'.join(indoor)}번"] if indoor else [])
+    parts = ([f"야외 {'·'.join(outdoor)}번"] if outdoor else []) + ([f"실내 {'·'.join(indoor)}번"] if indoor else [])
     return ", ".join(parts)
 
 
@@ -200,7 +220,7 @@ def build_message(cid, slots):
 
     lines = [f"{d.month}/{d.day}({WEEKDAY[d.weekday()]}) {s}~{e}{describe(labels)}"
              for (d, s, e), labels in sorted(grouped.items())]
-    head = f"🎾 {name} 빈자리 {len(grouped)}건"
+    head = f"🎾 {name_with_kind(cid, slots)} 빈자리 {len(grouped)}건"
     tail = f"👉 예약: {url}"
     budget = kakao.TEXT_LIMIT - len(head) - len(tail) - 2 - 8  # 줄바꿈 + "외 N건" 자리
     body = []
@@ -218,7 +238,7 @@ def build_digest(new_by_court):
     lines = []
     for cid, slots in sorted(new_by_court.items(), key=lambda kv: kv[1][0][0]):
         d, s, e, _ = min(slots)
-        lines.append(f"{COURT_INFO[cid][0]} {len(slots)}건 · {d.month}/{d.day}({WEEKDAY[d.weekday()]}) {s}~")
+        lines.append(f"{name_with_kind(cid, slots)} {len(slots)}건 · {d.month}/{d.day}({WEEKDAY[d.weekday()]}) {s}~")
     head = f"🎾 새 빈자리 {len(new_by_court)}곳"
     tail = f"👉 {PAGE_URL}"
     budget = kakao.TEXT_LIMIT - len(head) - len(tail) - 12
