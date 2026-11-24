@@ -13,16 +13,10 @@
   "songijeong": [],
   "yongsan-park-garden": []
  },
- "last_error": "",
+ "last_error": "목동 조회 실패 common/place HTTP 500",
  "summary_sent": "2026-11-24",
  "reminded": [],
  "stats": {
-  "2026-11-21": {
-   "alerts": 7,
-   "errors": [
-    "손기정"
-   ]
-  },
   "2026-11-22": {
    "alerts": 5,
    "errors": [
@@ -38,6 +32,12 @@
   "2026-11-24": {
    "alerts": 0,
    "errors": []
+  },
+  "2026-11-25": {
+   "alerts": 0,
+   "errors": [
+    "목동"
+   ]
   }
  }
 }
