@@ -14,13 +14,9 @@
   "yongsan-park-garden": []
  },
  "last_error": "",
- "summary_sent": "2026-11-27",
+ "summary_sent": "2026-11-28",
  "reminded": [],
  "stats": {
-  "2026-11-24": {
-   "alerts": 0,
-   "errors": []
-  },
   "2026-11-25": {
    "alerts": 0,
    "errors": [
@@ -36,6 +32,10 @@
    "errors": [
     "손기정"
    ]
+  },
+  "2026-11-28": {
+   "alerts": 0,
+   "errors": []
   }
  }
 }
